@@ -1,4 +1,5 @@
 import { User } from '@/@types/users'
+import { InputSearch } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -29,31 +30,38 @@ export default function Clientes() {
         Clientes
       </span>
       <div className="h-full w-full">
-        <Table className="border">
-          <TableCaption>Uma lista dos usúarios recentes.</TableCaption>
-          <TableHeader className="rounded-xl bg-gray-100">
-            <TableRow>
-              <TableHead className="w-[80px]">ID</TableHead>
-              <TableHead className="w-auto">Nome</TableHead>
-              <TableHead className="w-auto">Telefone</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {USERS.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.id}</TableCell>
-                <TableCell>{user.nome}</TableCell>
-                <TableCell>{user.telefone}</TableCell>
+        <div className="flex w-full flex-col rounded-xl border pt-2">
+          <div className="flex flex-col px-4 pt-2">
+            <span className="text-lg font-semibold text-muted-foreground">
+              Filtros
+            </span>
+            <div className="flex items-end">
+              <div className="flex flex-1 gap-3" />
+              <div className="flex w-[280px] items-center gap-2 py-2">
+                <InputSearch type="text" placeholder="Procurar..." />
+              </div>
+            </div>
+          </div>
+          <Table className="border">
+            <TableCaption>Uma lista dos todos os usúarios.</TableCaption>
+            <TableHeader className="rounded-xl bg-gray-100">
+              <TableRow>
+                <TableHead className="w-[80px]">ID</TableHead>
+                <TableHead className="w-auto">Nome</TableHead>
+                <TableHead className="w-auto">Telefone</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={2}></TableCell>
-              <TableCell className="text-right"></TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {USERS.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell className="font-medium">{user.id}</TableCell>
+                  <TableCell>{user.nome}</TableCell>
+                  <TableCell>{user.telefone}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </>
   )
