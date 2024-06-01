@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
 import { CheckCircle, CircleAlertIcon } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 
 import { IEmprestimo } from '@/@types/emprestimos'
 import { FilterRounded } from '@/assets/filter-rounded'
@@ -23,6 +24,8 @@ import {
 } from '@/components/ui/table'
 
 export default function Emprestimo() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const statusSearch = searchParams.get('status') === 'Aberto' ? 0 : 1
   const Emprestimos: IEmprestimo[] = [
     {
       Id: 1,
@@ -135,6 +138,10 @@ export default function Emprestimo() {
       Status: 0,
     },
   ]
+  const applyFilters = (value: string) => {
+    setSearchParams({ status: value })
+  }
+
   return (
     <>
       <span className="text-2xl font-semibold text-muted-foreground">
@@ -148,11 +155,19 @@ export default function Emprestimo() {
             </span>
             <div className="flex items-end">
               <div className="flex flex-1 gap-3">
-                <Button variant="ghost" className="gap-2 rounded-none">
+                <Button
+                  variant="link"
+                  className={`relative hover:no-underline ${statusSearch === 0 ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
+                  onClick={() => applyFilters('Aberto')}
+                >
                   <CircleAlertIcon size={16} />
                   Em aberto
                 </Button>
-                <Button variant="ghost" className="gap-2 rounded-none">
+                <Button
+                  variant="link"
+                  className={`relative hover:no-underline ${statusSearch === 1 ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
+                  onClick={() => applyFilters('Quitado')}
+                >
                   <CheckCircle size={16} />
                   Quitados
                 </Button>
@@ -201,7 +216,7 @@ export default function Emprestimo() {
             <TableCaption>Uma lista de todos os empréstimos.</TableCaption>
             <TableHeader className="bg-gray-100">
               <TableRow>
-                <TableHead className="w-[80px]">ID</TableHead>
+                <TableHead className="w-[80px] px-4">ID</TableHead>
                 <TableHead className="w-[80px]">Valor</TableHead>
                 <TableHead className="w-[80px]">Juros</TableHead>
                 <TableHead className="w-[80px] text-center">
@@ -215,27 +230,44 @@ export default function Emprestimo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Emprestimos.map((emprestimo) => (
-                <TableRow key={emprestimo.Id}>
-                  <TableCell className="font-medium">{emprestimo.Id}</TableCell>
-                  <TableCell>{emprestimo.Valor}</TableCell>
-                  <TableCell>{emprestimo.ValorJuros}</TableCell>
-                  <TableCell className="text-center">
-                    {emprestimo.ValorJurosDia}%
-                  </TableCell>
-                  <TableCell>{emprestimo.IdCliente}</TableCell>
-                  <TableCell>{String(emprestimo.DataEmprestimo)}</TableCell>
-                  <TableCell>{String(emprestimo.DataQuitacao)}</TableCell>
-                  <TableCell>{String(emprestimo.DataVencimento)}</TableCell>
-                  <TableCell>
-                    {emprestimo.Status === 0 ? (
-                      <Badge variant="outline">Aberto</Badge>
-                    ) : (
-                      <Badge variant="outline">Quitado</Badge>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {Emprestimos.filter((value) => value.Status === statusSearch).map(
+                (emprestimo) => (
+                  <TableRow
+                    key={emprestimo.Id}
+                    className="transition-all duration-300"
+                  >
+                    <TableCell className="px-4 font-medium">
+                      {emprestimo.Id}
+                    </TableCell>
+                    <TableCell>{emprestimo.Valor}</TableCell>
+                    <TableCell>{emprestimo.ValorJuros}</TableCell>
+                    <TableCell className="text-center">
+                      {emprestimo.ValorJurosDia}%
+                    </TableCell>
+                    <TableCell>{emprestimo.IdCliente}</TableCell>
+                    <TableCell>{String(emprestimo.DataEmprestimo)}</TableCell>
+                    <TableCell>{String(emprestimo.DataQuitacao)}</TableCell>
+                    <TableCell>{String(emprestimo.DataVencimento)}</TableCell>
+                    <TableCell>
+                      {emprestimo.Status === 0 ? (
+                        <Badge
+                          className="flex w-[70px] justify-center"
+                          variant="outline"
+                        >
+                          Aberto
+                        </Badge>
+                      ) : (
+                        <Badge
+                          className="flex w-[70px] justify-center"
+                          variant="outline"
+                        >
+                          Quitado
+                        </Badge>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ),
+              )}
             </TableBody>
           </Table>
         </div>
