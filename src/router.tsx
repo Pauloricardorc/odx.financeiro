@@ -2,7 +2,9 @@ import { createBrowserRouter } from 'react-router-dom'
 
 import Renovacao from './pages/app/clientes'
 import Emprestimo from './pages/app/emprestimo'
+import { Login } from './pages/app/login'
 import LayoutApp from './pages/Layouts/app'
+import { SignInLayout } from './pages/Layouts/AuthLayout'
 
 export const Router = createBrowserRouter([
   {
@@ -16,6 +18,16 @@ export const Router = createBrowserRouter([
       {
         path: '/clientes',
         element: <Renovacao />,
+      },
+    ],
+  },
+  {
+    path: '/',
+    element: <SignInLayout />,
+    children: [
+      {
+        path: '/login',
+        element: <Login />,
       },
     ],
   },
