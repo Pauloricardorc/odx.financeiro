@@ -1,11 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { EyeIcon, EyeOff } from 'lucide-react'
 import { useState } from 'react'
+import { useCookies } from 'react-cookie'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import * as z from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
+import { API } from '@/service/axios'
 
 import Hero from '../../../assets/hero-juros.svg'
 
@@ -18,12 +23,43 @@ type Schema = z.infer<typeof session>
 
 export function Login() {
   const [passwordView, setPasswordView] = useState(false)
+  const [, setCookieSession] = useCookies(['session'])
+  const navigate = useNavigate()
+  const { toast } = useToast()
+
+  const mutation = useMutation({
+    mutationKey: ['signIn'],
+    mutationFn: async (data: z.infer<typeof session>) => {
+      const response = await API.post('/Auth/Login', data)
+        .then((response) => {
+          const d = new Date()
+          d.setTime(d.getTime() + 60 * 1000 * 60)
+
+          setCookieSession('session', response.data, {
+            path: '/',
+            expires: d,
+          })
+          navigate('/')
+          return response.data
+        })
+        .catch(() => {
+          toast({
+            variant: 'destructive',
+            title: 'Email ou senha incorretos',
+            description: 'Tente novamente ou redefina sua senha.',
+          })
+        })
+      return response
+    },
+  })
 
   const { register, handleSubmit } = useForm<Schema>({
     resolver: zodResolver(session),
   })
 
-  const onSubmit = () => {}
+  const onSubmit = (data: z.infer<typeof session>) => {
+    mutation.mutate(data)
+  }
 
   return (
     <div className="mx-auto flex h-full w-full flex-col items-center justify-center gap-6 overflow-hidden px-2 xl:max-w-sm">
@@ -65,7 +101,12 @@ export function Login() {
               {passwordView ? <EyeIcon size={18} /> : <EyeOff size={18} />}
             </Button>
           </div>
-          <Button type="submit" className="w-full" variant="outline">
+          <Button
+            type="submit"
+            className="w-full"
+            variant="outline"
+            disabled={mutation.isPending}
+          >
             Entrar agora
           </Button>
         </form>

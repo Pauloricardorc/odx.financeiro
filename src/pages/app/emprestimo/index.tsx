@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { format } from 'date-fns'
+import { useQuery } from '@tanstack/react-query'
 import { CheckCircle, CircleAlertIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -22,121 +22,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { API } from '@/service/axios'
 
+import CriarEmprestimo from './criar-emprestimo'
 import RowTable from './emprestimo-row-table'
-
-const Emprestimos: IEmprestimo[] = [
-  {
-    Id: 1,
-    Valor: 1000.0,
-    ValorJuros: 0.05,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Alice',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 2,
-    Valor: 2000.0,
-    ValorJuros: 0.04,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Bob',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 3,
-    Valor: 1500.0,
-    ValorJuros: 0.045,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Charlie',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 1,
-  },
-  {
-    Id: 4,
-    Valor: 2500.0,
-    ValorJuros: 0.035,
-    ValorJurosDia: 0.2,
-    IdCliente: 'David',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 5,
-    Valor: 3000.0,
-    ValorJuros: 0.05,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Eve',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 6,
-    Valor: 1800.0,
-    ValorJuros: 0.03,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Frank',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 7,
-    Valor: 1200.0,
-    ValorJuros: 0.06,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Grace',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 1,
-  },
-  {
-    Id: 8,
-    Valor: 2200.0,
-    ValorJuros: 0.045,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Hank',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 9,
-    Valor: 1400.0,
-    ValorJuros: 0.055,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Ivy',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 1,
-  },
-  {
-    Id: 10,
-    Valor: 1600.0,
-    ValorJuros: 0.05,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Jack',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-]
 
 export default function Emprestimo() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -144,16 +33,25 @@ export default function Emprestimo() {
   const [search, setSearch] = useState('')
   const status = searchParams.get('status')
 
+  const { data: Emprestimos } = useQuery({
+    queryKey: ['emprestimos'],
+    queryFn: async () => {
+      const response = await API.get('/Emprestimos/Listar')
+      setListaEmprestimo(response.data)
+      return response.data
+    },
+  })
+
   useEffect(() => {
     if (searchParams.get('status') === 'Aberto') {
       const newList = Emprestimos.filter(
-        (emprestimo) => emprestimo.Status === 0,
+        (emprestimo: { status: number }) => emprestimo.status === 0,
       )
       setListaEmprestimo(newList)
     }
     if (searchParams.get('status') === 'Quitado') {
       const newList = Emprestimos.filter(
-        (emprestimo) => emprestimo.Status === 1,
+        (emprestimo: { status: number }) => emprestimo.status === 1,
       )
       setListaEmprestimo(newList)
     }
@@ -165,7 +63,7 @@ export default function Emprestimo() {
   useEffect(() => {
     if (search) {
       const newList = ListaEmprestimo.filter((list) =>
-        list.IdCliente.includes(search),
+        list.cliente.nome.includes(search),
       )
       setListaEmprestimo(newList)
     } else {
@@ -187,16 +85,16 @@ export default function Emprestimo() {
         Empréstimo
       </span>
       <div className="h-full w-full">
-        <div className="flex w-full flex-col rounded-xl border pt-2">
+        <div className="flex w-full flex-col rounded-xl border bg-card pt-2 shadow-md">
           <div className="flex flex-col px-4 pt-2">
             <span className="text-lg font-semibold text-muted-foreground">
               Filtros
             </span>
-            <div className="flex items-end">
-              <div className="flex flex-1 gap-3">
+            <div className="flex flex-col items-end md:flex-row">
+              <div className="flex flex-1 gap-6">
                 <Button
                   variant="link"
-                  className={`relative hover:no-underline ${searchParams.get('status') === 'Aberto' ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
+                  className={`relative px-0 hover:no-underline ${searchParams.get('status') === 'Aberto' ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
                   onClick={() => applyFilters('Aberto')}
                 >
                   <CircleAlertIcon size={16} />
@@ -204,15 +102,15 @@ export default function Emprestimo() {
                 </Button>
                 <Button
                   variant="link"
-                  className={`relative hover:no-underline ${searchParams.get('status') === 'Quitado' ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
+                  className={`relative px-0 hover:no-underline ${searchParams.get('status') === 'Quitado' ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
                   onClick={() => applyFilters('Quitado')}
                 >
                   <CheckCircle size={16} />
                   Quitados
                 </Button>
               </div>
-              <div className="flex w-[500px] items-center gap-2 py-2">
-                {/* <CriarEmprestimo /> */}
+              <div className="flex w-full items-center gap-2 py-2 md:w-[500px]">
+                <CriarEmprestimo />
 
                 <Popover>
                   <PopoverTrigger asChild>
@@ -259,25 +157,36 @@ export default function Emprestimo() {
           </div>
           <Table>
             <TableCaption>Uma lista de todos os empréstimos.</TableCaption>
-            <TableHeader className="bg-gray-100">
+            <TableHeader className="bg-transparent/5">
               <TableRow>
-                <TableHead className="w-[80px] px-4">ID</TableHead>
-                <TableHead className="w-[80px]">Valor</TableHead>
-                <TableHead className="w-[80px]">Juros</TableHead>
-                <TableHead className="w-[80px] text-center">
+                <TableHead className="w-[20px] max-w-[20px] px-4">ID</TableHead>
+                <TableHead className="w-[40px] text-center">Valor</TableHead>
+                <TableHead className="w-[40px] text-center">Receber</TableHead>
+                <TableHead className="w-[40px] text-center">Juros</TableHead>
+                <TableHead className="w-[40px] text-center">
                   Juros/Dia
                 </TableHead>
-                <TableHead className="w-[80px]">Cliente</TableHead>
-                <TableHead className="w-[80px]">Data Empréstimo</TableHead>
-                <TableHead className="w-[80px]">Data Quitação</TableHead>
-                <TableHead className="w-[80px]">Data Vencimento</TableHead>
+                <TableHead className="w-[220px]">Cliente</TableHead>
+                <TableHead className="w-[140px]">Data Empréstimo</TableHead>
+                <TableHead className="w-[140px]">Data Quitação</TableHead>
+                <TableHead className="w-[140px]">Data Vencimento</TableHead>
                 <TableHead className="w-[80px]">Status</TableHead>
+                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                  Renovar
+                </TableHead>
+                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                  Quitar
+                </TableHead>
+                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                  Editar
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {ListaEmprestimo.map((value) => {
-                return <RowTable key={value.Id} emprestimo={value} />
-              })}
+              {ListaEmprestimo &&
+                ListaEmprestimo.map((value) => {
+                  return <RowTable key={value.id} emprestimo={value} />
+                })}
             </TableBody>
           </Table>
         </div>
