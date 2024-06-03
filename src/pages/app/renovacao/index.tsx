@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
-import { HourglassIcon } from 'lucide-react'
+import { FileEdit } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -23,14 +23,15 @@ import {
 } from '@/components/ui/form'
 import { Input, InputProps } from '@/components/ui/input'
 
+interface Props {
+  idEmprestimo: number
+}
+
 const formSchema = z.object({
-  idEmprestimo: z.coerce.number({
-    message: 'Precisa informar o valor do empréstimo',
-  }),
   valor: z.coerce.number({ message: 'Valor do juros e obrigatório' }),
 })
 
-export default function Renovacao() {
+export default function Renovacao({ isEmprestimo }: Props) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -45,14 +46,13 @@ export default function Renovacao() {
       <DialogTrigger asChild>
         <Button
           variant="link"
+          className="flex h-7 w-[30px] items-center justify-center rounded-full bg-primary/10 p-0"
           onClick={() => {}}
-          className="flex h-full items-center gap-1.5 p-4 text-sm font-medium text-muted-foreground hover:text-primary/80 hover:no-underline"
         >
-          <HourglassIcon size={18} />
-          Renovação
+          <FileEdit className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[480px]">
+      <DialogContent className="max-w-[380px]">
         <DialogHeader>
           <DialogTitle>Renovar empréstimo</DialogTitle>
           <DialogDescription asChild>
@@ -61,19 +61,14 @@ export default function Renovacao() {
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="mt-6 space-y-4"
+                  className="mt-6 space-y-6"
                 >
-                  <div className="grid grid-cols-2 gap-6">
-                    <InputForm
-                      label="Emprestimo"
-                      name="idEmprestimo"
-                      type="number"
-                      form={form}
-                    />
+                  <div className="grid grid-cols-1 gap-6">
                     <InputForm
                       label="Valor"
                       name="valor"
                       type="number"
+                      className="col-span-1"
                       form={form}
                     />
                   </div>

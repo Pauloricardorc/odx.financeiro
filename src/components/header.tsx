@@ -1,7 +1,5 @@
 import { BadgeDollarSignIcon, Boxes, UserCheck2 } from 'lucide-react'
 
-import Renovacao from '@/pages/app/renovacao'
-
 import { NavLink } from './nav-link'
 import { ModeToggle } from './theme/mode-toggle'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
@@ -22,7 +20,6 @@ export default function Header() {
             <UserCheck2 size={18} />
             Clientes
           </NavLink>
-          <Renovacao />
         </nav>
       </div>
       <div className="flex items-center gap-4">

@@ -2,6 +2,8 @@ import { IEmprestimo } from '@/@types/emprestimos'
 import { Badge } from '@/components/ui/badge'
 import { TableCell, TableRow } from '@/components/ui/table'
 
+import Renovacao from '../renovacao'
+
 interface Props {
   emprestimo: IEmprestimo
 }
@@ -27,6 +29,9 @@ export default function RowTable({ emprestimo }: Props) {
             Quitado
           </Badge>
         )}
+      </TableCell>
+      <TableCell align="center" className="p-0">
+        <Renovacao idEmprestimo={emprestimo.Id} />
       </TableCell>
     </TableRow>
   )

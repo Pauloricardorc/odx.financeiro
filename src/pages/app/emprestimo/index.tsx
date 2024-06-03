@@ -273,6 +273,9 @@ export default function Emprestimo() {
                 <TableHead className="w-[80px]">Data Quitação</TableHead>
                 <TableHead className="w-[80px]">Data Vencimento</TableHead>
                 <TableHead className="w-[80px]">Status</TableHead>
+                <TableHead className="w-[40px] max-w-[50px] text-center">
+                  Renovar
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
