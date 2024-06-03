@@ -42,10 +42,14 @@ export default function EditarCliente({ idUser }: { idUser: number }) {
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      nome: '',
+      telefone: '',
+    },
   })
 
-  const defaultValues = () => {
-    form.reset()
+  const defaultValues = async () => {
+    await form.reset()
     queryClient.invalidateQueries({ queryKey: ['clientes'] })
     toast({
       variant: 'default',
@@ -116,7 +120,12 @@ export default function EditarCliente({ idUser }: { idUser: number }) {
                   />
                 </div>
                 <div className="flex items-center justify-end">
-                  <Button variant="default" type="submit" className="w-36">
+                  <Button
+                    variant="default"
+                    type="submit"
+                    className="w-36"
+                    disabled={mutation.isPending}
+                  >
                     Salvar
                   </Button>
                 </div>

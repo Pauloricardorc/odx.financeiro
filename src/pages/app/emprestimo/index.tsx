@@ -45,13 +45,13 @@ export default function Emprestimo() {
   useEffect(() => {
     if (searchParams.get('status') === 'Aberto') {
       const newList = Emprestimos.filter(
-        (emprestimo: { Status: number }) => emprestimo.Status === 0,
+        (emprestimo: { status: number }) => emprestimo.status === 0,
       )
       setListaEmprestimo(newList)
     }
     if (searchParams.get('status') === 'Quitado') {
       const newList = Emprestimos.filter(
-        (emprestimo: { Status: number }) => emprestimo.Status === 1,
+        (emprestimo: { status: number }) => emprestimo.status === 1,
       )
       setListaEmprestimo(newList)
     }
@@ -90,7 +90,7 @@ export default function Emprestimo() {
             <span className="text-lg font-semibold text-muted-foreground">
               Filtros
             </span>
-            <div className="flex items-end">
+            <div className="flex flex-col items-end md:flex-row">
               <div className="flex flex-1 gap-6">
                 <Button
                   variant="link"
@@ -109,7 +109,7 @@ export default function Emprestimo() {
                   Quitados
                 </Button>
               </div>
-              <div className="flex w-[500px] items-center gap-2 py-2">
+              <div className="flex w-full items-center gap-2 py-2 md:w-[500px]">
                 <CriarEmprestimo />
 
                 <Popover>
@@ -171,11 +171,14 @@ export default function Emprestimo() {
                 <TableHead className="w-[140px]">Data Quitação</TableHead>
                 <TableHead className="w-[140px]">Data Vencimento</TableHead>
                 <TableHead className="w-[80px]">Status</TableHead>
-                <TableHead className="w-[40px] max-w-[50px] text-center">
+                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
                   Renovar
                 </TableHead>
-                <TableHead className="w-[40px] max-w-[50px] text-center">
+                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
                   Quitar
+                </TableHead>
+                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                  Editar
                 </TableHead>
               </TableRow>
             </TableHeader>

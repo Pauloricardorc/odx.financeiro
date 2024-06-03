@@ -24,7 +24,7 @@ export default function Header() {
       </div>
       <div className="flex items-center gap-4">
         <ModeToggle />
-        <div className="flex h-full w-[220px] items-center gap-2 border-l px-4">
+        <div className="hidden h-full w-[220px] items-center gap-2 border-l px-4 md:flex">
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>

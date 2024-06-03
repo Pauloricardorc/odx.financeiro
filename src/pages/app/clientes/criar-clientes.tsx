@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -38,12 +38,18 @@ const formSchema = z.object({
 
 export default function NovoCliente() {
   const { toast } = useToast()
+  const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      nome: '',
+      telefone: '',
+    },
   })
 
   const defaultValues = () => {
     form.reset()
+    queryClient.invalidateQueries({ queryKey: ['clientes'] })
     toast({
       variant: 'default',
       title: 'Criado com sucesso',
@@ -108,7 +114,12 @@ export default function NovoCliente() {
                   />
                 </div>
                 <div className="flex items-center justify-end">
-                  <Button variant="default" type="submit" className="w-36">
+                  <Button
+                    variant="default"
+                    type="submit"
+                    className="w-36"
+                    disabled={mutation.isPending}
+                  >
                     Salvar
                   </Button>
                 </div>
