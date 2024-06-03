@@ -10,6 +10,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { API } from '@/service/axios'
 
 import Renovacao from '../renovacao'
+import DetalhesEmprestimo from './detalhes-emprestimo'
 import EditarEmprestimo from './editar-emprestimo'
 
 interface Props {
@@ -96,9 +97,15 @@ export default function RowTable({ emprestimo }: Props) {
       </TableCell>
       <TableCell
         align="center"
-        className="w-[40px] min-w-[40px] max-w-[40px] p-0"
+        className="w-[40px] min-w-[40px] max-w-[40px] p-0 text-amber-400"
       >
         <EditarEmprestimo idEmprestimo={emprestimo.id} />
+      </TableCell>
+      <TableCell
+        align="center"
+        className="w-[40px] min-w-[40px] max-w-[40px] p-0"
+      >
+        <DetalhesEmprestimo data={emprestimo} />
       </TableCell>
     </TableRow>
   )

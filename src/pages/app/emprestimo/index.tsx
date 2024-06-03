@@ -26,6 +26,7 @@ import { API } from '@/service/axios'
 
 import CriarEmprestimo from './criar-emprestimo'
 import RowTable from './emprestimo-row-table'
+import { EmprestimoTableSkeleton } from './emprestimo-skeleton'
 
 export default function Emprestimo() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -33,7 +34,7 @@ export default function Emprestimo() {
   const [search, setSearch] = useState('')
   const status = searchParams.get('status')
 
-  const { data: Emprestimos } = useQuery({
+  const { data: Emprestimos, isLoading } = useQuery({
     queryKey: ['emprestimos'],
     queryFn: async () => {
       const response = await API.get('/Emprestimos/Listar')
@@ -180,9 +181,13 @@ export default function Emprestimo() {
                 <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
                   Editar
                 </TableHead>
+                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                  Detalhes
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
+              {isLoading && <EmprestimoTableSkeleton />}
               {ListaEmprestimo &&
                 ListaEmprestimo.map((value) => {
                   return <RowTable key={value.id} emprestimo={value} />

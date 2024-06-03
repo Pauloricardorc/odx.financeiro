@@ -13,5 +13,8 @@ export type IEmprestimo = {
     nome: string
     telefone: string
   }
-  renovacoes: []
+  renovacoes: {
+    dataPagamento: string
+    valor: number
+  }[]
 }

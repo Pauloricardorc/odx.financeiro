@@ -84,7 +84,7 @@ export default function EditarEmprestimo({
       <DialogTrigger asChild>
         <Button
           variant="link"
-          className="flex h-7 w-[30px] max-w-[30px] items-center justify-center rounded-full bg-primary/10 p-0"
+          className="flex h-7 w-[30px] max-w-[30px] items-center justify-center rounded-full bg-amber-400/20 p-0 text-amber-400"
         >
           <FileEdit className="h-4 w-4" />
         </Button>

@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/table'
 import { API } from '@/service/axios'
 
+import { ClientesTableSkeleton } from './cliente-skeleton'
 import NovoCliente from './criar-clientes'
 import EditarCliente from './editar-clientes'
 
@@ -22,7 +23,7 @@ export default function Clientes() {
   const [search, setSearch] = useState('')
   const [listClientes, setListClientes] = useState<IUser[]>([])
 
-  const { data: Clientes } = useQuery({
+  const { data: Clientes, isLoading } = useQuery({
     queryKey: ['clientes'],
     queryFn: async () => {
       const response = await API.get('/Cliente/Listar')
@@ -74,6 +75,7 @@ export default function Clientes() {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {isLoading && <ClientesTableSkeleton />}
               {listClientes &&
                 listClientes.map((user) => (
                   <TableRow key={user.id}>
