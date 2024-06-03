@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
-import { HourglassIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -24,13 +23,13 @@ import {
 import { Input, InputProps } from '@/components/ui/input'
 
 const formSchema = z.object({
-  idEmprestimo: z.coerce.number({
-    message: 'Precisa informar o valor do empréstimo',
+  nome: z.string({
+    message: 'Nome e obrigatório',
   }),
-  valor: z.coerce.number({ message: 'Valor do juros e obrigatório' }),
+  telefone: z.string({ message: 'Telefone e obrigatório' }),
 })
 
-export default function Renovacao() {
+export default function NovoCliente() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
@@ -40,51 +39,38 @@ export default function Renovacao() {
     // ✅ This will be type-safe and validated.
     console.log(values)
   }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="link"
-          onClick={() => {}}
-          className="flex h-full items-center gap-1.5 p-4 text-sm font-medium text-muted-foreground hover:text-primary/80 hover:no-underline"
-        >
-          <HourglassIcon size={18} />
-          Renovação
-        </Button>
+        <Button variant="default">Novo cliente</Button>
       </DialogTrigger>
       <DialogContent className="max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>Renovar empréstimo</DialogTitle>
+          <DialogTitle>Novo Cliente</DialogTitle>
+          <DialogDescription>Criar um novo cliente</DialogDescription>
           <DialogDescription asChild>
-            <div>
-              <p>Fazer uma renovação do empréstimo de forma rápida aqui</p>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="mt-6 space-y-4"
-                >
-                  <div className="grid grid-cols-2 gap-6">
-                    <InputForm
-                      label="Emprestimo"
-                      name="idEmprestimo"
-                      type="number"
-                      form={form}
-                    />
-                    <InputForm
-                      label="Valor"
-                      name="valor"
-                      type="number"
-                      form={form}
-                    />
-                  </div>
-                  <div className="flex items-center justify-end">
-                    <Button variant="default" type="submit" className="w-36">
-                      Salvar
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </div>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4 pt-4"
+              >
+                <div className="grid grid-cols-2 gap-6">
+                  <InputForm label="Nome" name="nome" type="text" form={form} />
+                  <InputForm
+                    label="Telefone"
+                    name="telefone"
+                    type="text"
+                    form={form}
+                  />
+                </div>
+                <div className="flex items-center justify-end">
+                  <Button variant="default" type="submit" className="w-36">
+                    Salvar
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

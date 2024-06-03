@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -14,31 +15,27 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-
-// interface ICreateEmprestimo {
-//   valorEmprestado: number
-//   valorJuros: number
-//   valorJurosDia: number
-//   idCliente: number
-// }
+import { Input, InputProps } from '@/components/ui/input'
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
+  valorEmprestado: z.coerce.number({
+    message: 'Precisa informar o valor do empréstimo',
+  }),
+  valorJuros: z.coerce.number({ message: 'Valor do juros e obrigatório' }),
+  valorJurosDia: z.coerce.number({
+    message: 'Valor de juros por dia e obrigatório',
+  }),
+  idCliente: z.coerce.number({ message: 'Adicione um clinete' }),
 })
 
 export default function CriarEmprestimo() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: '',
-    },
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -52,36 +49,80 @@ export default function CriarEmprestimo() {
       <DialogTrigger asChild>
         <Button variant="default">Novo empréstimo</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle>Novo Empréstimo</DialogTitle>
           <DialogDescription>
+            Criar um novo registro de empréstimo
+          </DialogDescription>
+          <DialogDescription asChild>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
+                className="space-y-4 pt-4"
               >
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <Input placeholder="shadcn" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                <InputForm
+                  label="Cliente"
+                  name="idCliente"
+                  type="number"
+                  form={form}
                 />
+                <div className="grid grid-cols-2 gap-6">
+                  <InputForm
+                    label="Valor"
+                    name="valorEmprestado"
+                    type="number"
+                    form={form}
+                  />
+                  <InputForm
+                    label="Juros"
+                    name="valorJuros"
+                    type="number"
+                    form={form}
+                  />
+                </div>
+                <InputForm
+                  label="Juros do dia"
+                  name="valorJurosDia"
+                  type="number"
+                  form={form}
+                />
+                <div className="flex items-center justify-end">
+                  <Button variant="default" type="submit" className="w-36">
+                    Salvar
+                  </Button>
+                </div>
               </form>
             </Form>
           </DialogDescription>
         </DialogHeader>
       </DialogContent>
     </Dialog>
+  )
+}
+
+interface PropsFormInput extends InputProps {
+  label: string
+  form: any
+  name: string
+}
+
+export function InputForm({ label, form, name, ...props }: PropsFormInput) {
+  return (
+    <>
+      <FormField
+        control={form.control}
+        name={name}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{label}</FormLabel>
+            <FormControl>
+              <Input {...field} {...props} />
+            </FormControl>
+            <FormMessage className="text-xs" />
+          </FormItem>
+        )}
+      />
+    </>
   )
 }

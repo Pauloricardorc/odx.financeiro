@@ -23,6 +23,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import CriarEmprestimo from './criar-emprestimo'
 import RowTable from './emprestimo-row-table'
 
 const Emprestimos: IEmprestimo[] = [
@@ -187,16 +188,16 @@ export default function Emprestimo() {
         Empréstimo
       </span>
       <div className="h-full w-full">
-        <div className="flex w-full flex-col rounded-xl border pt-2">
+        <div className="flex w-full flex-col rounded-xl border bg-card pt-2 shadow-md">
           <div className="flex flex-col px-4 pt-2">
             <span className="text-lg font-semibold text-muted-foreground">
               Filtros
             </span>
             <div className="flex items-end">
-              <div className="flex flex-1 gap-3">
+              <div className="flex flex-1 gap-6">
                 <Button
                   variant="link"
-                  className={`relative hover:no-underline ${searchParams.get('status') === 'Aberto' ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
+                  className={`relative px-0 hover:no-underline ${searchParams.get('status') === 'Aberto' ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
                   onClick={() => applyFilters('Aberto')}
                 >
                   <CircleAlertIcon size={16} />
@@ -204,7 +205,7 @@ export default function Emprestimo() {
                 </Button>
                 <Button
                   variant="link"
-                  className={`relative hover:no-underline ${searchParams.get('status') === 'Quitado' ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
+                  className={`relative px-0 hover:no-underline ${searchParams.get('status') === 'Quitado' ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
                   onClick={() => applyFilters('Quitado')}
                 >
                   <CheckCircle size={16} />
@@ -212,7 +213,7 @@ export default function Emprestimo() {
                 </Button>
               </div>
               <div className="flex w-[500px] items-center gap-2 py-2">
-                {/* <CriarEmprestimo /> */}
+                <CriarEmprestimo />
 
                 <Popover>
                   <PopoverTrigger asChild>
@@ -259,7 +260,7 @@ export default function Emprestimo() {
           </div>
           <Table>
             <TableCaption>Uma lista de todos os empréstimos.</TableCaption>
-            <TableHeader className="bg-gray-100">
+            <TableHeader className="bg-transparent/5">
               <TableRow>
                 <TableHead className="w-[80px] px-4">ID</TableHead>
                 <TableHead className="w-[80px]">Valor</TableHead>

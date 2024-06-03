@@ -30,7 +30,7 @@ const InputSearch = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            'h-full w-full rounded-md px-3 py-1 outline-primary',
+            'h-full w-full rounded-md bg-transparent px-3 py-1 outline-primary',
             className,
           )}
           ref={ref}
