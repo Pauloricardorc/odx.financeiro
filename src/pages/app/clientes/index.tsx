@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
 import { IUser } from '@/@types/users'
@@ -11,32 +13,29 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { API } from '@/service/axios'
 
 import NovoCliente from './criar-clientes'
 
-const USERS: IUser[] = [
-  { id: 1, nome: 'Alice', telefone: '123-456-7890' },
-  { id: 2, nome: 'Bob', telefone: '234-567-8901' },
-  { id: 3, nome: 'Charlie', telefone: '345-678-9012' },
-  { id: 4, nome: 'David', telefone: '456-789-0123' },
-  { id: 5, nome: 'Eve', telefone: '567-890-1234' },
-  { id: 6, nome: 'Frank', telefone: '678-901-2345' },
-  { id: 7, nome: 'Grace', telefone: '789-012-3456' },
-  { id: 8, nome: 'Hank', telefone: '890-123-4567' },
-  { id: 9, nome: 'Ivy', telefone: '901-234-5678' },
-  { id: 10, nome: 'Jack', telefone: '012-345-6789' },
-]
-
 export default function Clientes() {
   const [search, setSearch] = useState('')
-  const [listClientes, setListClientes] = useState<IUser[]>(USERS)
+  const [listClientes, setListClientes] = useState<IUser[]>([])
+
+  const { data: Emprestimos } = useQuery({
+    queryKey: ['emprestimos'],
+    queryFn: async () => {
+      const response = await API.get('/Cliente/Listar')
+      setListClientes(response.data)
+      return response.data
+    },
+  })
 
   useEffect(() => {
     if (search) {
       const newList = listClientes.filter((list) => list.nome.includes(search))
       setListClientes(newList)
     } else {
-      setListClientes(USERS)
+      setListClientes(Emprestimos)
     }
   }, [search])
 
@@ -73,13 +72,16 @@ export default function Clientes() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {listClientes.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="px-4 font-medium">{user.id}</TableCell>
-                  <TableCell>{user.nome}</TableCell>
-                  <TableCell>{user.telefone}</TableCell>
-                </TableRow>
-              ))}
+              {listClientes &&
+                listClientes.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="px-4 font-medium">
+                      {user.id}
+                    </TableCell>
+                    <TableCell>{user.nome}</TableCell>
+                    <TableCell>{user.telefone}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </div>

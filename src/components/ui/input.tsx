@@ -1,5 +1,6 @@
 import { SearchIcon } from 'lucide-react'
 import * as React from 'react'
+import InputMask from 'react-input-mask'
 
 import { cn } from '@/lib/utils'
 
@@ -23,6 +24,25 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 )
 Input.displayName = 'Input'
 
+const InputFormMask = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, ...props }, ref) => {
+    return (
+      <InputMask
+        mask="+55 99 99999 9999"
+        maskChar=" "
+        type={type}
+        className={cn(
+          'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+          className,
+        )}
+        ref={ref}
+        {...props}
+      />
+    )
+  },
+)
+InputFormMask.displayName = 'InputFormMask'
+
 const InputSearch = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
@@ -45,4 +65,4 @@ const InputSearch = React.forwardRef<HTMLInputElement, InputProps>(
 )
 InputSearch.displayName = 'InputSearch'
 
-export { Input, InputSearch }
+export { Input, InputSearch, InputFormMask }

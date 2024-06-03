@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { format } from 'date-fns'
+import { useQuery } from '@tanstack/react-query'
 import { CheckCircle, CircleAlertIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
@@ -22,122 +22,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { API } from '@/service/axios'
 
 import CriarEmprestimo from './criar-emprestimo'
 import RowTable from './emprestimo-row-table'
-
-const Emprestimos: IEmprestimo[] = [
-  {
-    Id: 1,
-    Valor: 1000.0,
-    ValorJuros: 0.05,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Alice',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 2,
-    Valor: 2000.0,
-    ValorJuros: 0.04,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Bob',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 3,
-    Valor: 1500.0,
-    ValorJuros: 0.045,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Charlie',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 1,
-  },
-  {
-    Id: 4,
-    Valor: 2500.0,
-    ValorJuros: 0.035,
-    ValorJurosDia: 0.2,
-    IdCliente: 'David',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 5,
-    Valor: 3000.0,
-    ValorJuros: 0.05,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Eve',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 6,
-    Valor: 1800.0,
-    ValorJuros: 0.03,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Frank',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 7,
-    Valor: 1200.0,
-    ValorJuros: 0.06,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Grace',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 1,
-  },
-  {
-    Id: 8,
-    Valor: 2200.0,
-    ValorJuros: 0.045,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Hank',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-  {
-    Id: 9,
-    Valor: 1400.0,
-    ValorJuros: 0.055,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Ivy',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 1,
-  },
-  {
-    Id: 10,
-    Valor: 1600.0,
-    ValorJuros: 0.05,
-    ValorJurosDia: 0.2,
-    IdCliente: 'Jack',
-    DataEmprestimo: format(new Date(), 'MM/dd/yyyy'),
-    DataQuitacao: format(new Date(), 'MM/dd/yyyy'),
-    DataVencimento: format(new Date(), 'MM/dd/yyyy'),
-    Status: 0,
-  },
-]
 
 export default function Emprestimo() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -145,16 +33,25 @@ export default function Emprestimo() {
   const [search, setSearch] = useState('')
   const status = searchParams.get('status')
 
+  const { data: Emprestimos } = useQuery({
+    queryKey: ['emprestimos'],
+    queryFn: async () => {
+      const response = await API.get('/Emprestimos/Listar')
+      setListaEmprestimo(response.data)
+      return response.data
+    },
+  })
+
   useEffect(() => {
     if (searchParams.get('status') === 'Aberto') {
       const newList = Emprestimos.filter(
-        (emprestimo) => emprestimo.Status === 0,
+        (emprestimo: { Status: number }) => emprestimo.Status === 0,
       )
       setListaEmprestimo(newList)
     }
     if (searchParams.get('status') === 'Quitado') {
       const newList = Emprestimos.filter(
-        (emprestimo) => emprestimo.Status === 1,
+        (emprestimo: { Status: number }) => emprestimo.Status === 1,
       )
       setListaEmprestimo(newList)
     }
@@ -279,9 +176,10 @@ export default function Emprestimo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {ListaEmprestimo.map((value) => {
-                return <RowTable key={value.Id} emprestimo={value} />
-              })}
+              {ListaEmprestimo &&
+                ListaEmprestimo.map((value) => {
+                  return <RowTable key={value.Id} emprestimo={value} />
+                })}
             </TableBody>
           </Table>
         </div>

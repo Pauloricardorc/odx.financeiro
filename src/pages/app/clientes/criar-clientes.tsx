@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -20,24 +21,53 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Input, InputProps } from '@/components/ui/input'
+import { Input, InputFormMask, InputProps } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
+import { API } from '@/service/axios'
 
 const formSchema = z.object({
-  nome: z.string({
-    message: 'Nome e obrigatório',
-  }),
-  telefone: z.string({ message: 'Telefone e obrigatório' }),
+  nome: z
+    .string({
+      message: 'Nome e obrigatório',
+    })
+    .min(5, 'O nome precisa ter mais de 5 digitos'),
+  telefone: z
+    .string({ message: 'Telefone e obrigatório' })
+    .min(17, 'Minimo de digitos obrigatório'),
 })
 
 export default function NovoCliente() {
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   })
 
+  const defaultValues = () => {
+    form.reset()
+    toast({
+      variant: 'default',
+      title: 'Criado com sucesso',
+      description: 'Um novo cliente foi criado com sucesso.',
+    })
+  }
+
+  const mutation = useMutation({
+    mutationKey: ['users'],
+    mutationFn: async (data: any) => {
+      API.post('/Cliente/Criar', data)
+        .then(() => defaultValues())
+        .catch(() =>
+          toast({
+            variant: 'destructive',
+            title: 'Erro ao criar',
+            description: 'Um erro ocorreu ao criar o cliente.',
+          }),
+        )
+    },
+  })
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+    mutation.mutate(values)
   }
 
   return (
@@ -55,13 +85,26 @@ export default function NovoCliente() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4 pt-4"
               >
+                <InputForm
+                  label="Nome"
+                  name="nome"
+                  type="text"
+                  form={form}
+                  className="col-span-2"
+                />
                 <div className="grid grid-cols-2 gap-6">
-                  <InputForm label="Nome" name="nome" type="text" form={form} />
-                  <InputForm
-                    label="Telefone"
+                  <FormField
+                    control={form.control}
                     name="telefone"
-                    type="text"
-                    form={form}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Telefone</FormLabel>
+                        <FormControl>
+                          <InputFormMask {...field} />
+                        </FormControl>
+                        <FormMessage className="text-xs" />
+                      </FormItem>
+                    )}
                   />
                 </div>
                 <div className="flex items-center justify-end">
