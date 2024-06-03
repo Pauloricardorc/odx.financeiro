@@ -20,7 +20,7 @@ export function SignInLayout() {
           <div className="flex h-full items-start justify-start gap-3">
             <div className="flex items-center gap-3">
               <ScanFace />
-              <p className="text-2xl font-bold">Virtual</p>
+              <p className="text-2xl font-bold">Controle Financeiro</p>
             </div>
           </div>
           <div className="flex max-w-[400px] flex-col gap-3">

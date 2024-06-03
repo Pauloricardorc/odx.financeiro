@@ -10,17 +10,18 @@ interface Props {
 
 export default function RowTable({ emprestimo }: Props) {
   return (
-    <TableRow key={emprestimo.Id} className="transition-all duration-300">
-      <TableCell className="px-4 font-medium">{emprestimo.Id}</TableCell>
-      <TableCell>{emprestimo.Valor}</TableCell>
-      <TableCell>{emprestimo.ValorJuros}</TableCell>
-      <TableCell className="text-center">{emprestimo.ValorJurosDia}%</TableCell>
-      <TableCell>{emprestimo.IdCliente}</TableCell>
-      <TableCell>{String(emprestimo.DataEmprestimo)}</TableCell>
-      <TableCell>{String(emprestimo.DataQuitacao)}</TableCell>
-      <TableCell>{String(emprestimo.DataVencimento)}</TableCell>
+    <TableRow key={emprestimo.id} className="transition-all duration-300">
+      <TableCell className="px-4 font-medium">{emprestimo.id}</TableCell>
+      <TableCell>{emprestimo.valorEmprestado}</TableCell>
+      <TableCell>{emprestimo.valorAreceber}</TableCell>
+      <TableCell>{emprestimo.valorJuros}</TableCell>
+      <TableCell className="text-center">{emprestimo.valorJurosDia}%</TableCell>
+      <TableCell>{emprestimo.cliente.nome}</TableCell>
+      <TableCell>{String(emprestimo.dataEmprestimo)}</TableCell>
+      <TableCell>{String(emprestimo.dataQuitacao)}</TableCell>
+      <TableCell>{String(emprestimo.dataVencimento)}</TableCell>
       <TableCell>
-        {emprestimo.Status === 0 ? (
+        {emprestimo.status === 0 ? (
           <Badge className="flex w-[70px] justify-center" variant="outline">
             Aberto
           </Badge>
@@ -31,7 +32,7 @@ export default function RowTable({ emprestimo }: Props) {
         )}
       </TableCell>
       <TableCell align="center" className="p-0">
-        <Renovacao idEmprestimo={emprestimo.Id} />
+        <Renovacao idEmprestimo={emprestimo.id} />
       </TableCell>
     </TableRow>
   )

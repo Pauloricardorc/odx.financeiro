@@ -161,6 +161,7 @@ export default function Emprestimo() {
               <TableRow>
                 <TableHead className="w-[80px] px-4">ID</TableHead>
                 <TableHead className="w-[80px]">Valor</TableHead>
+                <TableHead className="w-[80px]">Receber</TableHead>
                 <TableHead className="w-[80px]">Juros</TableHead>
                 <TableHead className="w-[80px] text-center">
                   Juros/Dia
@@ -178,7 +179,7 @@ export default function Emprestimo() {
             <TableBody>
               {ListaEmprestimo &&
                 ListaEmprestimo.map((value) => {
-                  return <RowTable key={value.Id} emprestimo={value} />
+                  return <RowTable key={value.id} emprestimo={value} />
                 })}
             </TableBody>
           </Table>

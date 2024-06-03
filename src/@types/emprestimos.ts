@@ -1,11 +1,17 @@
 export type IEmprestimo = {
-  Id: number
-  Valor: number
-  ValorJuros: number
-  ValorJurosDia: number
-  IdCliente: string
-  DataEmprestimo: Date | string
-  DataQuitacao: Date | string
-  DataVencimento: Date | string
-  Status: number
+  id: number
+  valorEmprestado: number
+  valorAreceber: number
+  valorJuros: number
+  valorJurosDia: number
+  dataEmprestimo: string
+  dataQuitacao: string
+  dataVencimento: string
+  status: number
+  cliente: {
+    id: number
+    nome: string
+    telefone: string
+  }
+  renovacoes: []
 }

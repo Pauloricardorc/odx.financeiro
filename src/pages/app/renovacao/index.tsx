@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
 import { FileEdit } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -22,25 +23,59 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input, InputProps } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
+import { API } from '@/service/axios'
 
 interface Props {
   idEmprestimo: number
 }
 
 const formSchema = z.object({
-  valor: z.coerce.number({ message: 'Valor do juros e obrigatório' }),
+  valor: z.coerce.number({ message: 'Valor do juros e obrigatório' }).min(1),
 })
 
-export default function Renovacao({ isEmprestimo }: Props) {
+export default function Renovacao({ idEmprestimo }: Props) {
+  const { toast } = useToast()
+  const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      valor: 0,
+    },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  const defaultValues = () => {
+    form.reset()
+    toast({
+      variant: 'default',
+      title: 'Renovado com sucesso',
+      description: 'Um novo emprestimo foi renovado com sucesso.',
+    })
+    queryClient.invalidateQueries({ queryKey: ['emprestimos'] })
   }
+
+  const mutation = useMutation({
+    mutationKey: ['renovacao'],
+    mutationFn: async (valor: z.infer<typeof formSchema>) => {
+      API.post('/Emprestimos/Renovar', {
+        idEmprestimo,
+        valor: valor.valor,
+      })
+        .then(() => defaultValues())
+        .catch(() =>
+          toast({
+            variant: 'destructive',
+            title: 'Erro ao renovar',
+            description: 'Um erro ocorreu ao criar a renovação.',
+          }),
+        )
+    },
+  })
+
+  function onSubmit(valor: z.infer<typeof formSchema>) {
+    mutation.mutate(valor)
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -55,6 +90,7 @@ export default function Renovacao({ isEmprestimo }: Props) {
       <DialogContent className="max-w-[380px]">
         <DialogHeader>
           <DialogTitle>Renovar empréstimo</DialogTitle>
+          <p>{String(idEmprestimo)}</p>
           <DialogDescription asChild>
             <div>
               <p>Fazer uma renovação do empréstimo de forma rápida aqui</p>
@@ -73,7 +109,12 @@ export default function Renovacao({ isEmprestimo }: Props) {
                     />
                   </div>
                   <div className="flex items-center justify-end">
-                    <Button variant="default" type="submit" className="w-36">
+                    <Button
+                      variant="default"
+                      type="submit"
+                      className="w-36"
+                      disabled={mutation.isPending}
+                    >
                       Salvar
                     </Button>
                   </div>

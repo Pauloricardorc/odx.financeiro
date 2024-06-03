@@ -21,8 +21,8 @@ export default function Clientes() {
   const [search, setSearch] = useState('')
   const [listClientes, setListClientes] = useState<IUser[]>([])
 
-  const { data: Emprestimos } = useQuery({
-    queryKey: ['emprestimos'],
+  const { data: Clientes } = useQuery({
+    queryKey: ['clientes'],
     queryFn: async () => {
       const response = await API.get('/Cliente/Listar')
       setListClientes(response.data)
@@ -35,7 +35,7 @@ export default function Clientes() {
       const newList = listClientes.filter((list) => list.nome.includes(search))
       setListClientes(newList)
     } else {
-      setListClientes(Emprestimos)
+      setListClientes(Clientes)
     }
   }, [search])
 
