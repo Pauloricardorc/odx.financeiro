@@ -63,7 +63,7 @@ export default function Emprestimo() {
   useEffect(() => {
     if (search) {
       const newList = ListaEmprestimo.filter((list) =>
-        list.IdCliente.includes(search),
+        list.cliente.nome.includes(search),
       )
       setListaEmprestimo(newList)
     } else {
@@ -159,20 +159,23 @@ export default function Emprestimo() {
             <TableCaption>Uma lista de todos os empréstimos.</TableCaption>
             <TableHeader className="bg-transparent/5">
               <TableRow>
-                <TableHead className="w-[80px] px-4">ID</TableHead>
-                <TableHead className="w-[80px]">Valor</TableHead>
-                <TableHead className="w-[80px]">Receber</TableHead>
-                <TableHead className="w-[80px]">Juros</TableHead>
-                <TableHead className="w-[80px] text-center">
+                <TableHead className="w-[20px] max-w-[20px] px-4">ID</TableHead>
+                <TableHead className="w-[40px] text-center">Valor</TableHead>
+                <TableHead className="w-[40px] text-center">Receber</TableHead>
+                <TableHead className="w-[40px] text-center">Juros</TableHead>
+                <TableHead className="w-[40px] text-center">
                   Juros/Dia
                 </TableHead>
-                <TableHead className="w-[80px]">Cliente</TableHead>
-                <TableHead className="w-[80px]">Data Empréstimo</TableHead>
-                <TableHead className="w-[80px]">Data Quitação</TableHead>
-                <TableHead className="w-[80px]">Data Vencimento</TableHead>
+                <TableHead className="w-[220px]">Cliente</TableHead>
+                <TableHead className="w-[140px]">Data Empréstimo</TableHead>
+                <TableHead className="w-[140px]">Data Quitação</TableHead>
+                <TableHead className="w-[140px]">Data Vencimento</TableHead>
                 <TableHead className="w-[80px]">Status</TableHead>
                 <TableHead className="w-[40px] max-w-[50px] text-center">
                   Renovar
+                </TableHead>
+                <TableHead className="w-[40px] max-w-[50px] text-center">
+                  Quitar
                 </TableHead>
               </TableRow>
             </TableHeader>

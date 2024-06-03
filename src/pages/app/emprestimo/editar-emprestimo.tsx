@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { FileEdit } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { IUser } from '@/@types/users'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -23,13 +23,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input, InputProps } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { useToast } from '@/components/ui/use-toast'
 import { API } from '@/service/axios'
 
@@ -41,10 +34,13 @@ const formSchema = z.object({
   valorJurosDia: z.coerce.number({
     message: 'Valor de juros por dia e obrigatório',
   }),
-  idCliente: z.coerce.number({ required_error: 'Selecione um cliente' }),
 })
 
-export default function CriarEmprestimo() {
+export default function EditarEmprestimo({
+  idEmprestimo,
+}: {
+  idEmprestimo: number
+}) {
   const { toast } = useToast()
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,29 +52,24 @@ export default function CriarEmprestimo() {
     queryClient.invalidateQueries({ queryKey: ['emprestimos'] })
     toast({
       variant: 'default',
-      title: 'Criado com sucesso',
-      description: 'Um novo emprestimo foi criado com sucesso.',
+      title: 'Editado com sucesso',
+      description: 'Um emprestimo foi editado com sucesso.',
     })
   }
-
-  const { data: Users } = useQuery({
-    queryKey: ['clientes'],
-    queryFn: async () => {
-      const result = await API.get<IUser[]>('/Cliente/Listar')
-      return result.data
-    },
-  })
 
   const mutation = useMutation({
     mutationKey: ['emprestimo'],
     mutationFn: async (data: any) => {
-      API.post('/Emprestimos/Criar', data)
+      API.put('/Emprestimos/Alterar', {
+        ...data,
+        id: idEmprestimo,
+      })
         .then(() => defaultValues())
         .catch(() =>
           toast({
             variant: 'destructive',
-            title: 'Erro ao criar',
-            description: 'Um erro ocorreu ao criar o emprestimo.',
+            title: 'Erro ao editar',
+            description: 'Um erro ocorreu ao editar o empréstimo.',
           }),
         )
     },
@@ -91,13 +82,18 @@ export default function CriarEmprestimo() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default">Novo empréstimo</Button>
+        <Button
+          variant="link"
+          className="flex h-7 w-[30px] max-w-[30px] items-center justify-center rounded-full bg-primary/10 p-0"
+        >
+          <FileEdit className="h-4 w-4" />
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>Novo Empréstimo</DialogTitle>
+          <DialogTitle>Editar Empréstimo</DialogTitle>
           <DialogDescription>
-            Criar um novo registro de empréstimo
+            Editar um registro de empréstimo
           </DialogDescription>
           <DialogDescription asChild>
             <Form {...form}>
@@ -105,37 +101,6 @@ export default function CriarEmprestimo() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4 pt-4"
               >
-                <FormField
-                  control={form.control}
-                  name="idCliente"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cliente</FormLabel>
-                      <Select onValueChange={field.onChange}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione um cliente">
-                              {Users?.filter(
-                                (result) =>
-                                  String(result?.id) ===
-                                    String(form.watch('idCliente')) &&
-                                  result.nome,
-                              ).map((res) => res.nome)}
-                            </SelectValue>
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {Users?.map((user) => (
-                            <SelectItem key={user.id} value={String(user.id)}>
-                              {user.nome}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <div className="grid grid-cols-2 gap-6">
                   <InputForm
                     label="Valor"

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FileEdit } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -90,7 +90,6 @@ export default function Renovacao({ idEmprestimo }: Props) {
       <DialogContent className="max-w-[380px]">
         <DialogHeader>
           <DialogTitle>Renovar empréstimo</DialogTitle>
-          <p>{String(idEmprestimo)}</p>
           <DialogDescription asChild>
             <div>
               <p>Fazer uma renovação do empréstimo de forma rápida aqui</p>

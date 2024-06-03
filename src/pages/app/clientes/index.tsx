@@ -16,6 +16,7 @@ import {
 import { API } from '@/service/axios'
 
 import NovoCliente from './criar-clientes'
+import EditarCliente from './editar-clientes'
 
 export default function Clientes() {
   const [search, setSearch] = useState('')
@@ -52,7 +53,7 @@ export default function Clientes() {
             </span>
             <div className="flex items-end">
               <div className="flex flex-1 gap-3" />
-              <div className="flex w-[280px] items-center gap-2 py-2">
+              <div className="flex w-[380px] items-center gap-2 py-2">
                 <NovoCliente />
                 <InputSearch
                   type="text"
@@ -69,6 +70,7 @@ export default function Clientes() {
                 <TableHead className="w-[80px] px-4">ID</TableHead>
                 <TableHead className="w-auto">Nome</TableHead>
                 <TableHead className="w-auto">Telefone</TableHead>
+                <TableHead className="w-auto text-center">Editar</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -80,6 +82,9 @@ export default function Clientes() {
                     </TableCell>
                     <TableCell>{user.nome}</TableCell>
                     <TableCell>{user.telefone}</TableCell>
+                    <TableCell align="center" className="p-0">
+                      <EditarCliente idUser={user.id} />
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
