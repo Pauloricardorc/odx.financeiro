@@ -1,10 +1,7 @@
-import {
-  BadgeDollarSignIcon,
-  Boxes,
-  LogOutIcon,
-  UserCheck2,
-} from 'lucide-react'
+import { BadgeDollarSignIcon, LogOutIcon, UserCheck2 } from 'lucide-react'
 import { useCookies } from 'react-cookie'
+
+import { HeaderLogo } from '@/assets/header-logo'
 
 import { NavLink } from './nav-link'
 import { ModeToggle } from './theme/mode-toggle'
@@ -19,7 +16,7 @@ export default function Header() {
     <div className="flex w-full items-center border-b bg-card px-4">
       <div className="flex flex-1 items-center">
         <div className="pr-4">
-          <Boxes className="h-8 w-8 text-primary" strokeWidth={1.2} />
+          <HeaderLogo />
         </div>
         <nav className="flex items-center space-x-2">
           <NavLink to="/">
