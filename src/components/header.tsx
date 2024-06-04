@@ -1,10 +1,20 @@
-import { BadgeDollarSignIcon, Boxes, UserCheck2 } from 'lucide-react'
+import {
+  BadgeDollarSignIcon,
+  Boxes,
+  LogOutIcon,
+  UserCheck2,
+} from 'lucide-react'
+import { useCookies } from 'react-cookie'
 
 import { NavLink } from './nav-link'
 import { ModeToggle } from './theme/mode-toggle'
+import { TooltipDemo } from './tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { Button } from './ui/button'
 
 export default function Header() {
+  const [, , removeSessionCookie] = useCookies(['session'])
+
   return (
     <div className="flex w-full items-center border-b bg-card px-4">
       <div className="flex flex-1 items-center">
@@ -22,8 +32,17 @@ export default function Header() {
           </NavLink>
         </nav>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
         <ModeToggle />
+        <TooltipDemo title="Sair">
+          <Button
+            variant="outline"
+            className="border-0 bg-primary/20 px-2"
+            onClick={() => removeSessionCookie('session', { path: '/' })}
+          >
+            <LogOutIcon size={18} className="text-primary" />
+          </Button>
+        </TooltipDemo>
         <div className="hidden h-full w-[220px] items-center gap-2 border-l px-4 md:flex">
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />

@@ -5,19 +5,14 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { IEmprestimo } from '@/@types/emprestimos'
-import { FilterRounded } from '@/assets/filter-rounded'
-import { DatePickerDemo } from '@/components/filter-date'
 import { Button } from '@/components/ui/button'
 import { InputSearch } from '@/components/ui/input'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import {
   Table,
   TableBody,
   TableCaption,
+  TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -26,6 +21,7 @@ import { API } from '@/service/axios'
 
 import CriarEmprestimo from './criar-emprestimo'
 import RowTable from './emprestimo-row-table'
+import { EmprestimoTableSkeleton } from './emprestimo-skeleton'
 
 export default function Emprestimo() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -33,7 +29,7 @@ export default function Emprestimo() {
   const [search, setSearch] = useState('')
   const status = searchParams.get('status')
 
-  const { data: Emprestimos } = useQuery({
+  const { data: Emprestimos, isLoading } = useQuery({
     queryKey: ['emprestimos'],
     queryFn: async () => {
       const response = await API.get('/Emprestimos/Listar')
@@ -44,21 +40,22 @@ export default function Emprestimo() {
 
   useEffect(() => {
     if (searchParams.get('status') === 'Aberto') {
-      const newList = Emprestimos.filter(
+      const newList = Emprestimos?.filter(
         (emprestimo: { status: number }) => emprestimo.status === 0,
       )
       setListaEmprestimo(newList)
     }
     if (searchParams.get('status') === 'Quitado') {
-      const newList = Emprestimos.filter(
+      const newList = Emprestimos?.filter(
         (emprestimo: { status: number }) => emprestimo.status === 1,
       )
       setListaEmprestimo(newList)
     }
     if (!searchParams.get('status')) {
+      setSearchParams({})
       return setListaEmprestimo(Emprestimos)
     }
-  }, [status])
+  }, [status, Emprestimos])
 
   useEffect(() => {
     if (search) {
@@ -112,7 +109,7 @@ export default function Emprestimo() {
               <div className="flex w-full items-center gap-2 py-2 md:w-[500px]">
                 <CriarEmprestimo />
 
-                <Popover>
+                {/* <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
@@ -146,7 +143,7 @@ export default function Emprestimo() {
                     </div>
                     <Button className="mt-2 w-full">Filtrar</Button>
                   </PopoverContent>
-                </Popover>
+                </Popover> */}
                 <InputSearch
                   type="text"
                   placeholder="Procurar..."
@@ -156,7 +153,9 @@ export default function Emprestimo() {
             </div>
           </div>
           <Table>
-            <TableCaption>Uma lista de todos os empréstimos.</TableCaption>
+            <TableCaption className="py-2">
+              Uma lista de todos os empréstimos.
+            </TableCaption>
             <TableHeader className="bg-transparent/5">
               <TableRow>
                 <TableHead className="w-[20px] max-w-[20px] px-4">ID</TableHead>
@@ -180,14 +179,28 @@ export default function Emprestimo() {
                 <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
                   Editar
                 </TableHead>
+                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                  Detalhes
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
+              {isLoading && <EmprestimoTableSkeleton />}
               {ListaEmprestimo &&
                 ListaEmprestimo.map((value) => {
                   return <RowTable key={value.id} emprestimo={value} />
                 })}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell
+                  className="text-center text-sm font-semibold text-muted-foreground"
+                  colSpan={14}
+                >
+                  Total de {ListaEmprestimo?.length} empréstimos{' '}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
           </Table>
         </div>
       </div>
