@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { useToast } from '@/components/ui/use-toast'
 import { API } from '@/service/axios'
+import { ConvertCurrency } from '@/utils/convertCurrency'
 
 import Renovacao from '../renovacao'
 import DetalhesEmprestimo from './detalhes-emprestimo'
@@ -50,11 +51,17 @@ export default function RowTable({ emprestimo }: Props) {
     <TableRow key={emprestimo.id} className="transition-all duration-300">
       <TableCell className="px-4 font-medium">{emprestimo.id}</TableCell>
       <TableCell className="text-center">
-        {emprestimo.valorEmprestado}
+        {ConvertCurrency(emprestimo.valorEmprestado)}
       </TableCell>
-      <TableCell className="text-center">{emprestimo.valorAreceber}</TableCell>
-      <TableCell className="text-center">{emprestimo.valorJuros}</TableCell>
-      <TableCell className="text-center">{emprestimo.valorJurosDia}%</TableCell>
+      <TableCell className="text-center">
+        {ConvertCurrency(emprestimo.valorAreceber)}
+      </TableCell>
+      <TableCell className="text-center">
+        {ConvertCurrency(emprestimo.valorJuros)}
+      </TableCell>
+      <TableCell className="text-center">
+        {ConvertCurrency(emprestimo.valorJurosDia)}
+      </TableCell>
       <TableCell>{emprestimo.cliente.nome}</TableCell>
       <TableCell>
         {String(format(emprestimo.dataEmprestimo, 'dd/MM/yyyy'))}
