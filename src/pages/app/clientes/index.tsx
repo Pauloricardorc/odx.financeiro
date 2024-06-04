@@ -9,6 +9,7 @@ import {
   TableBody,
   TableCaption,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -90,6 +91,16 @@ export default function Clientes() {
                   </TableRow>
                 ))}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TableCell
+                  className="text-center text-sm font-semibold text-muted-foreground"
+                  colSpan={14}
+                >
+                  Total {Clientes?.length} clientes{' '}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
           </Table>
         </div>
       </div>

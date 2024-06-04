@@ -89,8 +89,10 @@ export default function EditarCliente({ idUser }: { idUser: number }) {
       </DialogTrigger>
       <DialogContent className="max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>Novo Cliente</DialogTitle>
-          <DialogDescription>Criar um novo cliente</DialogDescription>
+          <DialogTitle>Editar Cliente</DialogTitle>
+          <DialogDescription>
+            Alterar informações de um cliente
+          </DialogDescription>
           <DialogDescription asChild>
             <Form {...form}>
               <form
