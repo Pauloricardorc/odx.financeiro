@@ -42,6 +42,18 @@ export default function Emprestimo() {
     },
   })
 
+  const {
+    data: EmprestimosAtrasados,
+    refetch: RefetchEmprestimosAtrasados,
+    isRefetching: StatusRefetchAtrasados,
+  } = useQuery({
+    queryKey: ['emprestimos-atrasados'],
+    queryFn: async () => {
+      const response = await API.get('/Emprestimos/ListarAtrasados')
+      return response.data
+    },
+  })
+
   useEffect(() => {
     if (searchParams.get('status') === 'Aberto') {
       const newList = Emprestimos?.filter(
@@ -55,11 +67,15 @@ export default function Emprestimo() {
       )
       setListaEmprestimo(newList)
     }
+    if (searchParams.get('status') === 'Atrasados') {
+      RefetchEmprestimosAtrasados()
+      setListaEmprestimo(EmprestimosAtrasados)
+    }
     if (!searchParams.get('status')) {
       setSearchParams({})
       return setListaEmprestimo(Emprestimos)
     }
-  }, [status, Emprestimos])
+  }, [status, Emprestimos, EmprestimosAtrasados])
 
   useEffect(() => {
     if (search) {
@@ -124,6 +140,14 @@ export default function Emprestimo() {
                   <CheckCircle size={16} />
                   Quitados
                 </Button>
+                <Button
+                  variant="link"
+                  className={`relative px-0 hover:no-underline ${searchParams.get('status') === 'Atrasados' ? 'before:b-0 gap-2 rounded-none before:absolute before:bottom-0 before:h-0.5 before:w-full before:bg-primary' : 'gap-2 rounded-none text-muted-foreground'}`}
+                  onClick={() => applyFilters('Atrasados')}
+                >
+                  <CheckCircle size={16} />
+                  Atrasados
+                </Button>
               </div>
               <div className="flex w-full items-center gap-2 py-2 sm:max-w-[400px] md:w-[800px]">
                 <CriarEmprestimo />
@@ -172,7 +196,8 @@ export default function Emprestimo() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && <EmprestimoTableSkeleton />}
+              {isLoading ||
+                (StatusRefetchAtrasados && <EmprestimoTableSkeleton />)}
               {ListaEmprestimo &&
                 ListaEmprestimo.map((value) => {
                   return <RowTable key={value.id} emprestimo={value} />
