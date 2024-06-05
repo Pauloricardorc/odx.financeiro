@@ -2,6 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FileEdit } from 'lucide-react'
+import { CurrencyInput } from 'react-currency-mask'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -31,7 +32,9 @@ interface Props {
 }
 
 const formSchema = z.object({
-  valor: z.coerce.number({ message: 'Valor do juros e obrigatório' }).min(1),
+  valor: z.coerce
+    .number({ message: 'Valor do juros e obrigatório' })
+    .min(1, 'Valor mínimo precisar ser maior que zero'),
 })
 
 export default function Renovacao({ idEmprestimo }: Props) {
@@ -99,10 +102,9 @@ export default function Renovacao({ idEmprestimo }: Props) {
                   className="mt-6 space-y-6"
                 >
                   <div className="grid grid-cols-1 gap-6">
-                    <InputForm
+                    <InputCurrencyForm
                       label="Valor"
                       name="valor"
-                      type="number"
                       className="col-span-1"
                       form={form}
                     />
@@ -133,7 +135,12 @@ interface PropsFormInput extends InputProps {
   name: string
 }
 
-export function InputForm({ label, form, name, ...props }: PropsFormInput) {
+export function InputCurrencyForm({
+  label,
+  form,
+  name,
+  ...props
+}: PropsFormInput) {
   return (
     <>
       <FormField
@@ -143,7 +150,13 @@ export function InputForm({ label, form, name, ...props }: PropsFormInput) {
           <FormItem>
             <FormLabel>{label}</FormLabel>
             <FormControl>
-              <Input {...field} {...props} />
+              <CurrencyInput
+                value={field.value}
+                onChangeValue={(_, value) => {
+                  field.onChange(value)
+                }}
+                InputElement={<Input {...field} {...props} />}
+              />
             </FormControl>
             <FormMessage className="text-xs" />
           </FormItem>

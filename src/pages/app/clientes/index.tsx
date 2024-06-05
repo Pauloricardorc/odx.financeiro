@@ -1,8 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery } from '@tanstack/react-query'
+import { LogOutIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useCookies } from 'react-cookie'
 
 import { IUser } from '@/@types/users'
+import { ModeToggle } from '@/components/theme/mode-toggle'
+import { TooltipDemo } from '@/components/tooltip'
+import { Button } from '@/components/ui/button'
 import { InputSearch } from '@/components/ui/input'
 import {
   Table,
@@ -21,6 +26,7 @@ import NovoCliente from './criar-clientes'
 import EditarCliente from './editar-clientes'
 
 export default function Clientes() {
+  const [, , removeSessionCookie] = useCookies(['session'])
   const [search, setSearch] = useState('')
   const [listClientes, setListClientes] = useState<IUser[]>([])
 
@@ -44,9 +50,23 @@ export default function Clientes() {
 
   return (
     <>
-      <span className="text-2xl font-semibold text-muted-foreground">
-        Clientes
-      </span>
+      <div className="flex w-full items-center justify-between">
+        <span className="text-2xl font-semibold text-muted-foreground">
+          Clientes
+        </span>
+        <div className="flex gap-3 sm:hidden">
+          <ModeToggle />
+          <TooltipDemo title="Sair">
+            <Button
+              variant="outline"
+              className="border-0 bg-primary/20 px-2"
+              onClick={() => removeSessionCookie('session', { path: '/' })}
+            >
+              <LogOutIcon size={18} className="text-primary" />
+            </Button>
+          </TooltipDemo>
+        </div>
+      </div>
       <div className="h-full w-full">
         <div className="flex w-full flex-col rounded-xl border bg-card pt-2 shadow-md">
           <div className="flex flex-col px-4 pt-2">

@@ -10,9 +10,9 @@ import { useToast } from '@/components/ui/use-toast'
 import { API } from '@/service/axios'
 import { ConvertCurrency } from '@/utils/convertCurrency'
 
-import Renovacao from '../renovacao'
 import DetalhesEmprestimo from './detalhes-emprestimo'
 import EditarEmprestimo from './editar-emprestimo'
+import Renovacao from './renovar-emprestimo'
 
 interface Props {
   emprestimo: IEmprestimo

@@ -81,7 +81,7 @@ export default function NovoCliente() {
       <DialogTrigger asChild>
         <Button variant="default">Novo cliente</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[480px]">
+      <DialogContent className="max-w-[380px] rounded-lg sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle>Novo Cliente</DialogTitle>
           <DialogDescription>Criar um novo cliente</DialogDescription>
@@ -103,7 +103,7 @@ export default function NovoCliente() {
                     control={form.control}
                     name="telefone"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="col-span-2 sm:col-span-1">
                         <FormLabel>Telefone</FormLabel>
                         <FormControl>
                           <InputFormMask {...field} />

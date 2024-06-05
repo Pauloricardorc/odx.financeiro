@@ -1,10 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useQuery } from '@tanstack/react-query'
-import { CheckCircle, CircleAlertIcon } from 'lucide-react'
+import { CheckCircle, CircleAlertIcon, LogOutIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useCookies } from 'react-cookie'
 import { useSearchParams } from 'react-router-dom'
 
 import { IEmprestimo } from '@/@types/emprestimos'
+import { ModeToggle } from '@/components/theme/mode-toggle'
+import { TooltipDemo } from '@/components/tooltip'
 import { Button } from '@/components/ui/button'
 import { InputSearch } from '@/components/ui/input'
 import {
@@ -24,6 +27,7 @@ import RowTable from './emprestimo-row-table'
 import { EmprestimoTableSkeleton } from './emprestimo-skeleton'
 
 export default function Emprestimo() {
+  const [, , removeSessionCookie] = useCookies(['session'])
   const [searchParams, setSearchParams] = useSearchParams()
   const [ListaEmprestimo, setListaEmprestimo] = useState<IEmprestimo[]>([])
   const [search, setSearch] = useState('')
@@ -78,9 +82,24 @@ export default function Emprestimo() {
 
   return (
     <>
-      <span className="text-2xl font-semibold text-muted-foreground">
-        Empréstimo
-      </span>
+      <div className="flex w-full items-center justify-between">
+        <span className="text-2xl font-semibold text-muted-foreground">
+          Empréstimo
+        </span>
+        <div className="flex gap-3 sm:hidden">
+          <ModeToggle />
+          <TooltipDemo title="Sair">
+            <Button
+              variant="outline"
+              className="border-0 bg-primary/20 px-2"
+              onClick={() => removeSessionCookie('session', { path: '/' })}
+            >
+              <LogOutIcon size={18} className="text-primary" />
+            </Button>
+          </TooltipDemo>
+        </div>
+      </div>
+
       <div className="h-full w-full">
         <div className="flex w-full flex-col rounded-xl border bg-card pt-2 shadow-md">
           <div className="flex flex-col px-4 pt-2">
@@ -106,44 +125,10 @@ export default function Emprestimo() {
                   Quitados
                 </Button>
               </div>
-              <div className="flex w-full items-center gap-2 py-2 md:w-[500px]">
+              <div className="flex w-full items-center gap-2 py-2 sm:max-w-[400px] md:w-[800px]">
                 <CriarEmprestimo />
 
-                {/* <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="flex items-center gap-1 font-semibold"
-                    >
-                      Filtro
-                      <FilterRounded />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    <div className="flex flex-col gap-2">
-                      <h4 className="font-medium leading-none">Filtros</h4>
-                      <p className="text-sm text-muted-foreground">
-                        faça um filtro mais completo
-                      </p>
-                      <DatePickerDemo
-                        id="inicioData"
-                        className="col-span-3 h-8 w-full"
-                        placeholder="Data do Empréstimo"
-                      />
-                      <DatePickerDemo
-                        id="fimData"
-                        className="col-span-3 h-8 w-full"
-                        placeholder="Data da Quitação"
-                      />
-                      <DatePickerDemo
-                        id="vencimentoData"
-                        className="col-span-3 h-8 w-full"
-                        placeholder="Data do Vencimento"
-                      />
-                    </div>
-                    <Button className="mt-2 w-full">Filtrar</Button>
-                  </PopoverContent>
-                </Popover> */}
+                {/* <DatePickerWithRange /> */}
                 <InputSearch
                   type="text"
                   placeholder="Procurar..."
@@ -165,21 +150,23 @@ export default function Emprestimo() {
                 <TableHead className="w-[40px] text-center">
                   Juros/Dia
                 </TableHead>
-                <TableHead className="w-[220px]">Cliente</TableHead>
+                <TableHead className="flex w-[220px] items-center">
+                  Cliente
+                </TableHead>
                 <TableHead className="w-[140px]">Data Empréstimo</TableHead>
                 <TableHead className="w-[140px]">Data Quitação</TableHead>
                 <TableHead className="w-[140px]">Data Vencimento</TableHead>
                 <TableHead className="w-[80px]">Status</TableHead>
-                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                <TableHead className="w-[40px] min-w-[80px] max-w-[80px] text-center">
                   Renovar
                 </TableHead>
-                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                <TableHead className="w-[40px] min-w-[80px] max-w-[80px] text-center">
                   Quitar
                 </TableHead>
-                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                <TableHead className="w-[40px] min-w-[80px] max-w-[80px] text-center">
                   Editar
                 </TableHead>
-                <TableHead className="w-[40px] min-w-[50px] max-w-[50px] text-center">
+                <TableHead className="w-[40px] min-w-[80px] max-w-[80px] text-center">
                   Detalhes
                 </TableHead>
               </TableRow>

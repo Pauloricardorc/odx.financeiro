@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { CurrencyInput } from 'react-currency-mask'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -34,14 +35,16 @@ import { useToast } from '@/components/ui/use-toast'
 import { API } from '@/service/axios'
 
 const formSchema = z.object({
-  valorEmprestado: z.coerce.number({
-    message: 'Precisa informar o valor do empréstimo',
-  }),
+  valorEmprestado: z.coerce
+    .number({
+      message: 'Valor do empréstimo e obrigatório',
+    })
+    .min(1, 'Valor mínimo não permitido'),
   valorJuros: z.coerce.number({ message: 'Valor do juros e obrigatório' }),
   valorJurosDia: z.coerce.number({
     message: 'Valor de juros por dia e obrigatório',
   }),
-  idCliente: z.coerce.number({ required_error: 'Selecione um cliente' }),
+  idCliente: z.coerce.number({ message: 'Selecione um cliente' }),
 })
 
 export default function CriarEmprestimo() {
@@ -93,7 +96,7 @@ export default function CriarEmprestimo() {
       <DialogTrigger asChild>
         <Button variant="default">Novo empréstimo</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[480px]">
+      <DialogContent className="max-w-[380px] rounded-lg sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle>Novo Empréstimo</DialogTitle>
           <DialogDescription>
@@ -137,23 +140,20 @@ export default function CriarEmprestimo() {
                   )}
                 />
                 <div className="grid grid-cols-2 gap-6">
-                  <InputForm
+                  <InputCurrencyForm
                     label="Valor"
                     name="valorEmprestado"
-                    type="number"
                     form={form}
                   />
-                  <InputForm
+                  <InputCurrencyForm
                     label="Juros"
                     name="valorJuros"
-                    type="number"
                     form={form}
                   />
                 </div>
-                <InputForm
+                <InputCurrencyForm
                   label="Juros do dia"
                   name="valorJurosDia"
-                  type="number"
                   form={form}
                 />
                 <div className="flex items-center justify-end">
@@ -181,7 +181,12 @@ interface PropsFormInput extends InputProps {
   name: string
 }
 
-export function InputForm({ label, form, name, ...props }: PropsFormInput) {
+export function InputCurrencyForm({
+  label,
+  form,
+  name,
+  ...props
+}: PropsFormInput) {
   return (
     <>
       <FormField
@@ -191,7 +196,13 @@ export function InputForm({ label, form, name, ...props }: PropsFormInput) {
           <FormItem>
             <FormLabel>{label}</FormLabel>
             <FormControl>
-              <Input {...field} {...props} />
+              <CurrencyInput
+                value={field.value}
+                onChangeValue={(_, value) => {
+                  field.onChange(value)
+                }}
+                InputElement={<Input {...field} {...props} />}
+              />
             </FormControl>
             <FormMessage className="text-xs" />
           </FormItem>

@@ -20,6 +20,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { ConvertCurrency } from '@/utils/convertCurrency'
 
 interface Props {
   data: IEmprestimo
@@ -36,16 +37,13 @@ export default function DetalhesEmprestimo({ data }: Props) {
           <EyeIcon className="h-4 w-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="h-full w-full overflow-y-scroll sm:w-[380px]">
         <SheetHeader>
-          <SheetTitle>Detalhes do {data.cliente?.nome}</SheetTitle>
+          <SheetTitle>Detalhes do empréstimo</SheetTitle>
           <SheetDescription asChild>
             <div>
-              <p>
-                Todas as informações do empréstimo que foi feito por esse
-                cliente
-              </p>
-              <div className="mt-12 flex flex-col gap-3">
+              <p>Todas as informações do empréstimo que foi feito.</p>
+              <div className="mt-6 flex flex-col gap-3">
                 <p>Cliente</p>
                 <Separator />
                 <div className="flex flex-col gap-2">
@@ -54,6 +52,7 @@ export default function DetalhesEmprestimo({ data }: Props) {
                     id="clienteNome"
                     value={data.cliente?.nome}
                     onChange={() => {}}
+                    autoFocus={false}
                   />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -62,6 +61,7 @@ export default function DetalhesEmprestimo({ data }: Props) {
                     id="telefone"
                     value={data.cliente?.telefone}
                     onChange={() => {}}
+                    autoFocus={false}
                   />
                 </div>
                 <p>Empréstimo</p>
@@ -71,32 +71,36 @@ export default function DetalhesEmprestimo({ data }: Props) {
                     <Label htmlFor="valorEmprestado">Empréstimo</Label>
                     <Input
                       id="valorEmprestado"
-                      value={data.valorEmprestado}
+                      value={ConvertCurrency(data.valorEmprestado)}
                       onChange={() => {}}
+                      autoFocus={false}
                     />
                   </div>
                   <div>
                     <Label htmlFor="valorAreceber">A receber</Label>
                     <Input
                       id="valorAreceber"
-                      value={data.valorAreceber}
+                      value={ConvertCurrency(data.valorAreceber)}
                       onChange={() => {}}
+                      autoFocus={false}
                     />
                   </div>
                   <div>
                     <Label htmlFor="valorJuros">Juros</Label>
                     <Input
                       id="valorJuros"
-                      value={data.valorJuros}
+                      value={ConvertCurrency(data.valorJuros)}
                       onChange={() => {}}
+                      autoFocus={false}
                     />
                   </div>
                   <div>
                     <Label htmlFor="valorJurosDia">Juros/Dia</Label>
                     <Input
                       id="valorJurosDia"
-                      value={data.valorJurosDia}
+                      value={ConvertCurrency(data.valorJurosDia)}
                       onChange={() => {}}
+                      autoFocus={false}
                     />
                   </div>
                   <div>
@@ -105,6 +109,7 @@ export default function DetalhesEmprestimo({ data }: Props) {
                       id="dataEmprestimo"
                       value={format(data.dataEmprestimo, 'dd/MM/yyyy')}
                       onChange={() => {}}
+                      autoFocus={false}
                     />
                   </div>
                   <div>
@@ -113,6 +118,7 @@ export default function DetalhesEmprestimo({ data }: Props) {
                       id="dataQuitacao"
                       value={format(data.dataQuitacao, 'dd/MM/yyyy')}
                       onChange={() => {}}
+                      autoFocus={false}
                     />
                   </div>
                   <div>
@@ -121,6 +127,7 @@ export default function DetalhesEmprestimo({ data }: Props) {
                       id="dataVencimento"
                       value={format(data.dataVencimento, 'dd/MM/yyyy')}
                       onChange={() => {}}
+                      autoFocus={false}
                     />
                   </div>
                   <div>
@@ -129,6 +136,7 @@ export default function DetalhesEmprestimo({ data }: Props) {
                       id="status"
                       value={data.status === 0 ? 'Aberto' : 'Quitado'}
                       onChange={() => {}}
+                      autoFocus={false}
                     />
                   </div>
                 </div>

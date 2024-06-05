@@ -2,6 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FileEdit } from 'lucide-react'
+import { CurrencyInput } from 'react-currency-mask'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -27,13 +28,19 @@ import { useToast } from '@/components/ui/use-toast'
 import { API } from '@/service/axios'
 
 const formSchema = z.object({
-  valorEmprestado: z.coerce.number({
-    message: 'Precisa informar o valor do empréstimo',
-  }),
-  valorJuros: z.coerce.number({ message: 'Valor do juros e obrigatório' }),
-  valorJurosDia: z.coerce.number({
-    message: 'Valor de juros por dia e obrigatório',
-  }),
+  valorEmprestado: z.coerce
+    .number({
+      message: 'Precisa informar o valor do empréstimo',
+    })
+    .min(1, 'Valor mínimo precisar ser maior que zero'),
+  valorJuros: z.coerce
+    .number({ message: 'Valor do juros e obrigatório' })
+    .min(1, 'Valor mínimo precisar ser maior que zero'),
+  valorJurosDia: z.coerce
+    .number({
+      message: 'Valor de juros por dia e obrigatório',
+    })
+    .min(1, 'Valor mínimo precisar ser maior que zero'),
 })
 
 export default function EditarEmprestimo({
@@ -45,6 +52,11 @@ export default function EditarEmprestimo({
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      valorEmprestado: 0,
+      valorJuros: 0,
+      valorJurosDia: 0,
+    },
   })
 
   const defaultValues = () => {
@@ -102,23 +114,20 @@ export default function EditarEmprestimo({
                 className="space-y-4 pt-4"
               >
                 <div className="grid grid-cols-2 gap-6">
-                  <InputForm
+                  <InputCurrencyForm
                     label="Valor"
                     name="valorEmprestado"
-                    type="number"
                     form={form}
                   />
-                  <InputForm
+                  <InputCurrencyForm
                     label="Juros"
                     name="valorJuros"
-                    type="number"
                     form={form}
                   />
                 </div>
-                <InputForm
+                <InputCurrencyForm
                   label="Juros do dia"
                   name="valorJurosDia"
-                  type="number"
                   form={form}
                 />
                 <div className="flex items-center justify-end">
@@ -146,7 +155,12 @@ interface PropsFormInput extends InputProps {
   name: string
 }
 
-export function InputForm({ label, form, name, ...props }: PropsFormInput) {
+export function InputCurrencyForm({
+  label,
+  form,
+  name,
+  ...props
+}: PropsFormInput) {
   return (
     <>
       <FormField
@@ -156,7 +170,13 @@ export function InputForm({ label, form, name, ...props }: PropsFormInput) {
           <FormItem>
             <FormLabel>{label}</FormLabel>
             <FormControl>
-              <Input {...field} {...props} />
+              <CurrencyInput
+                value={field.value}
+                onChangeValue={(_, value) => {
+                  field.onChange(value)
+                }}
+                InputElement={<Input {...field} {...props} />}
+              />
             </FormControl>
             <FormMessage className="text-xs" />
           </FormItem>
