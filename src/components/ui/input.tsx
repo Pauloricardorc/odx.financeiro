@@ -47,9 +47,7 @@ const InputMarkCurrency = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
       <CurrencyInput
-        onChangeValue={(event, originalValue, maskedValue) => {
-          console.log(event, originalValue, maskedValue)
-        }}
+        onChangeValue={() => {}}
         InputElement={
           <input
             type={type}

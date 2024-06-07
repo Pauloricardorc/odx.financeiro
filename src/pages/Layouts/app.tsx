@@ -16,7 +16,7 @@ export default function LayoutApp() {
 
   return (
     getSession.session && (
-      <div className="font-nunito flex h-screen w-screen flex-col">
+      <div className="flex h-screen w-screen flex-col font-nunito">
         <Header />
 
         <div className="flex flex-1 flex-col gap-6 p-4">

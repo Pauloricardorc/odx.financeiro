@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CurrencyInput } from 'react-currency-mask'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -23,7 +24,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input, InputProps } from '@/components/ui/input'
-import { useToast } from '@/components/ui/use-toast'
 import { API } from '@/service/axios'
 
 interface Props {
@@ -37,7 +37,6 @@ const formSchema = z.object({
 })
 
 export default function Renovacao({ idEmprestimo }: Props) {
-  const { toast } = useToast()
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,29 +47,19 @@ export default function Renovacao({ idEmprestimo }: Props) {
 
   const defaultValues = () => {
     form.reset()
-    toast({
-      variant: 'default',
-      title: 'Renovado com sucesso',
-      description: 'Um novo emprestimo foi renovado com sucesso.',
-    })
+    toast.success('Renovação do contrato feito com sucesso.')
     queryClient.invalidateQueries({ queryKey: ['emprestimos'] })
   }
 
   const mutation = useMutation({
     mutationKey: ['renovacao'],
     mutationFn: async (valor: z.infer<typeof formSchema>) => {
-      API.post('/Emprestimos/Renovar', {
+      await API.post('/Emprestimos/Renovar', {
         idEmprestimo,
         valor: valor.valor,
       })
         .then(() => defaultValues())
-        .catch(() =>
-          toast({
-            variant: 'destructive',
-            title: 'Erro ao renovar',
-            description: 'Um erro ocorreu ao criar a renovação.',
-          }),
-        )
+        .catch(() => toast.error('Erro ao fazer a renovação do emprétimo.'))
     },
   })
 
@@ -83,9 +72,9 @@ export default function Renovacao({ idEmprestimo }: Props) {
       <DialogTrigger asChild>
         <Button
           variant="link"
-          className="flex w-full items-center justify-start text-sm text-accent-foreground transition-colors hover:bg-transparent/10 hover:no-underline"
+          className="flex w-full items-center justify-start text-sm text-accent-foreground transition-colors hover:bg-transparent/20 hover:no-underline"
         >
-          renovar
+          Renovar
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[380px]">
@@ -114,7 +103,7 @@ export default function Renovacao({ idEmprestimo }: Props) {
                       className="w-36"
                       disabled={mutation.isPending}
                     >
-                      Salvar
+                      {mutation.isPending ? 'Salvando' : 'Salvar'}
                     </Button>
                   </div>
                 </form>

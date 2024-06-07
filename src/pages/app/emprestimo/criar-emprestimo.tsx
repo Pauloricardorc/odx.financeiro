@@ -82,7 +82,7 @@ export default function CriarEmprestimo() {
   const mutation = useMutation({
     mutationKey: ['emprestimo'],
     mutationFn: async (data: any) => {
-      API.post('/Emprestimos/Criar', data)
+      await API.post('/Emprestimos/Criar', data)
         .then(() => defaultValues())
         .catch(() =>
           toast({

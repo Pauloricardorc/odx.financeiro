@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { EllipsisVertical } from 'lucide-react'
+import { EllipsisVertical, Loader2Icon } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -10,7 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useToast } from '@/components/ui/use-toast'
 import { API } from '@/service/axios'
 
 import Renovacao from './renovar-emprestimo'
@@ -20,33 +20,35 @@ interface Props {
 }
 
 export default function OpcoesRowTable({ idEmprestimo }: Props) {
-  const { toast } = useToast()
   const queryClient = useQueryClient()
 
-  const handleQuitado = () => {
-    toast({
-      title: 'O emprestimo quitado',
-      description: `Emprestimo quitado`,
-    })
-    queryClient.invalidateQueries({ queryKey: ['emprestimos'] })
-  }
-
-  const { mutate: QuitarEmprestimo } = useMutation({
+  const { mutateAsync: QuitarEmprestimo, isPending } = useMutation({
     mutationKey: ['emprestimos'],
     mutationFn: async () => {
-      API.put('/Emprestimos/Quitar', {
-        id: idEmprestimo,
-      })
-        .then(() => handleQuitado())
-        .catch(() => {
-          toast({
-            variant: 'destructive',
-            title: 'O emprestimo não foi quitado',
-            description: `Ocorreu um erro do quitar o emprestimo`,
-          })
+      try {
+        await API.put('/Emprestimos/Quitar', {
+          id: idEmprestimo,
         })
+        return true
+      } catch (error) {
+        toast('Erro ao quitar o empréstimo')
+        throw error
+      }
     },
   })
+
+  const handleQuintarEmprestimo = async () => {
+    try {
+      await toast.promise(QuitarEmprestimo(), {
+        loading: 'Quitando o empréstimo',
+        success: 'Empréstimo quitado com sucesso',
+        error: 'Erro ao quitar o empréstimo',
+      })
+      queryClient.invalidateQueries({ queryKey: ['emprestimos'] })
+    } catch (error) {
+      console.error('Erro ao tentar quitar o empréstimo:', error)
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -64,7 +66,8 @@ export default function OpcoesRowTable({ idEmprestimo }: Props) {
         <DropdownMenuLabel asChild>
           <Button
             variant="link"
-            className="flex w-full items-center justify-start px-3.5 text-sm text-accent-foreground transition-colors hover:bg-transparent/10 hover:no-underline"
+            className="flex w-full items-center justify-start px-3.5 text-sm text-accent-foreground transition-colors hover:bg-transparent/20 hover:no-underline"
+            disabled
           >
             PDF
           </Button>
@@ -72,10 +75,12 @@ export default function OpcoesRowTable({ idEmprestimo }: Props) {
         <DropdownMenuLabel asChild>
           <Button
             variant="link"
-            className="flex w-full items-center justify-start px-3.5 text-sm text-accent-foreground transition-colors hover:bg-transparent/10 hover:no-underline"
-            onClick={() => QuitarEmprestimo()}
+            className="duration-400 flex w-full items-center justify-start px-3.5 text-sm text-accent-foreground transition-all hover:bg-transparent/20 hover:no-underline"
+            onClick={() => handleQuintarEmprestimo()}
+            disabled={isPending}
           >
-            quitar
+            {isPending && <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />}{' '}
+            Quitar
           </Button>
         </DropdownMenuLabel>
         <DropdownMenuItem asChild>
