@@ -182,16 +182,13 @@ export default function Emprestimo() {
                 <TableHead className="w-[140px]">Data Vencimento</TableHead>
                 <TableHead className="w-[80px]">Status</TableHead>
                 <TableHead className="w-[40px] min-w-[80px] max-w-[80px] text-center">
-                  Renovar
-                </TableHead>
-                <TableHead className="w-[40px] min-w-[80px] max-w-[80px] text-center">
-                  Quitar
-                </TableHead>
-                <TableHead className="w-[40px] min-w-[80px] max-w-[80px] text-center">
                   Editar
                 </TableHead>
                 <TableHead className="w-[40px] min-w-[80px] max-w-[80px] text-center">
                   Detalhes
+                </TableHead>
+                <TableHead className="w-[40px] min-w-[80px] max-w-[80px] text-center">
+                  Opções
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -207,7 +204,7 @@ export default function Emprestimo() {
               <TableRow>
                 <TableCell
                   className="text-center text-sm font-semibold text-muted-foreground"
-                  colSpan={14}
+                  colSpan={13}
                 >
                   Total de {ListaEmprestimo?.length} empréstimos{' '}
                 </TableCell>

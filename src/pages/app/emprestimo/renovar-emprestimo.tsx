@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { FileEdit } from 'lucide-react'
 import { CurrencyInput } from 'react-currency-mask'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -84,10 +83,9 @@ export default function Renovacao({ idEmprestimo }: Props) {
       <DialogTrigger asChild>
         <Button
           variant="link"
-          className="flex h-7 w-[30px] items-center justify-center rounded-full bg-primary/10 p-0"
-          onClick={() => {}}
+          className="flex w-full items-center justify-start text-sm text-accent-foreground transition-colors hover:bg-transparent/10 hover:no-underline"
         >
-          <FileEdit className="h-4 w-4" />
+          renovar
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[380px]">

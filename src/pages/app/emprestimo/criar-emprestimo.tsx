@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { setDefaultOptions } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { CurrencyInput } from 'react-currency-mask'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { IUser } from '@/@types/users'
+import { SimpleDateForm } from '@/components/simples-date-form'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -45,9 +48,13 @@ const formSchema = z.object({
     message: 'Valor de juros por dia e obrigatório',
   }),
   idCliente: z.coerce.number({ message: 'Selecione um cliente' }),
+  dataEmprestimo: z.date({
+    required_error: 'A data do empréstimo e obrigatório.',
+  }),
 })
 
 export default function CriarEmprestimo() {
+  setDefaultOptions({ locale: ptBR })
   const { toast } = useToast()
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof formSchema>>({
@@ -140,22 +147,30 @@ export default function CriarEmprestimo() {
                   )}
                 />
                 <div className="grid grid-cols-2 gap-6">
+                  <SimpleDateForm
+                    form={form}
+                    label="Date Empréstimo"
+                    name="dataEmprestimo"
+                    placeholder="Data do empréstimo"
+                  />
                   <InputCurrencyForm
                     label="Valor"
                     name="valorEmprestado"
                     form={form}
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-6">
                   <InputCurrencyForm
                     label="Juros"
                     name="valorJuros"
                     form={form}
                   />
+                  <InputCurrencyForm
+                    label="Juros do dia"
+                    name="valorJurosDia"
+                    form={form}
+                  />
                 </div>
-                <InputCurrencyForm
-                  label="Juros do dia"
-                  name="valorJurosDia"
-                  form={form}
-                />
                 <div className="flex items-center justify-end">
                   <Button
                     variant="default"

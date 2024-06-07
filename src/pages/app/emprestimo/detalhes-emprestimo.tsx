@@ -32,9 +32,9 @@ export default function DetalhesEmprestimo({ data }: Props) {
       <SheetTrigger asChild>
         <Button
           variant="link"
-          className="flex h-7 w-[30px] max-w-[30px] items-center justify-center rounded-full bg-primary/10 p-0"
+          className="flex h-7 w-[30px] max-w-[30px] items-center justify-center rounded-lg bg-primary/10 p-0"
         >
-          <EyeIcon className="h-4 w-4" />
+          <EyeIcon className="h-5 w-5" />
         </Button>
       </SheetTrigger>
       <SheetContent className="h-full w-full overflow-y-scroll sm:w-[380px]">
