@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Textarea, TextareaProps } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { API } from '@/service/axios'
 
@@ -47,6 +48,7 @@ const formSchema = z.object({
   valorJurosDia: z.coerce.number({
     message: 'Valor de juros por dia e obrigatório',
   }),
+  observacao: z.string().nullable(),
   idCliente: z.coerce.number({ message: 'Selecione um cliente' }),
   dataEmprestimo: z.date({
     required_error: 'A data do empréstimo e obrigatório.',
@@ -171,6 +173,11 @@ export default function CriarEmprestimo() {
                     form={form}
                   />
                 </div>
+                <TextAreaForm
+                  label="Observação"
+                  name="observacao"
+                  form={form}
+                />
                 <div className="flex items-center justify-end">
                   <Button
                     variant="default"
@@ -191,6 +198,11 @@ export default function CriarEmprestimo() {
 }
 
 interface PropsFormInput extends InputProps {
+  label: string
+  form: any
+  name: string
+}
+interface PropsFormTextArea extends TextareaProps {
   label: string
   form: any
   name: string
@@ -218,6 +230,31 @@ export function InputCurrencyForm({
                 }}
                 InputElement={<Input {...field} {...props} />}
               />
+            </FormControl>
+            <FormMessage className="text-xs" />
+          </FormItem>
+        )}
+      />
+    </>
+  )
+}
+
+export function TextAreaForm({
+  label,
+  form,
+  name,
+  ...props
+}: PropsFormTextArea) {
+  return (
+    <>
+      <FormField
+        control={form.control}
+        name={name}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{label}</FormLabel>
+            <FormControl>
+              <Textarea className="resize-none" {...field} {...props} />
             </FormControl>
             <FormMessage className="text-xs" />
           </FormItem>

@@ -63,15 +63,21 @@ export default function OpcoesRowTable({ idEmprestimo }: Props) {
       <DropdownMenuContent>
         <DropdownMenuLabel>Opções</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel asChild>
-          <Button
-            variant="link"
-            className="flex w-full items-center justify-start px-3.5 text-sm text-accent-foreground transition-colors hover:bg-transparent/20 hover:no-underline"
-            disabled
+        {/* <DropdownMenuLabel asChild>
+          <PDFDownloadLink
+            document={<ContratoDeEmprestimo />}
+            fileName="contrato_de_empréstimo.pdf"
           >
-            PDF
-          </Button>
-        </DropdownMenuLabel>
+            {({ loading }) => (
+              <Button
+                variant="link"
+                className="flex w-full items-center justify-start px-3.5 text-sm text-accent-foreground transition-colors hover:bg-transparent/20 hover:no-underline"
+              >
+                {loading ? 'Carregando documento...' : 'PDF'}
+              </Button>
+            )}
+          </PDFDownloadLink>
+        </DropdownMenuLabel> */}
         <DropdownMenuLabel asChild>
           <Button
             variant="link"
