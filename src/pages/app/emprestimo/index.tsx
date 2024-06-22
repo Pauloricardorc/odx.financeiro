@@ -6,6 +6,7 @@ import { useCookies } from 'react-cookie'
 import { useSearchParams } from 'react-router-dom'
 
 import { IEmprestimo } from '@/@types/emprestimos'
+import CustomPagination from '@/components/pagination'
 import { ModeToggle } from '@/components/theme/mode-toggle'
 import { TooltipDemo } from '@/components/tooltip'
 import { Button } from '@/components/ui/button'
@@ -21,6 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { API } from '@/service/axios'
+import { ConvertCurrency } from '@/utils/convertCurrency'
 
 import CriarEmprestimo from './criar-emprestimo'
 import RowTable from './emprestimo-row-table'
@@ -32,6 +34,12 @@ export default function Emprestimo() {
   const [ListaEmprestimo, setListaEmprestimo] = useState<IEmprestimo[]>([])
   const [search, setSearch] = useState('')
   const status = searchParams.get('status')
+  const [page, setPage] = useState(0)
+  const [perPage, setPerPage] = useState(10)
+
+  const totalReceber = ListaEmprestimo?.reduce((acc, item) => {
+    return acc + item.valorAreceber
+  }, 0)
 
   const { data: Emprestimos, isLoading } = useQuery({
     queryKey: ['emprestimos'],
@@ -80,7 +88,7 @@ export default function Emprestimo() {
   useEffect(() => {
     if (search) {
       const newList = ListaEmprestimo.filter((list) =>
-        list.cliente.nome.includes(search),
+        list.cliente.nome.toLowerCase().includes(search.toLowerCase()),
       )
       setListaEmprestimo(newList)
     } else {
@@ -118,7 +126,7 @@ export default function Emprestimo() {
 
       <div className="h-full w-full">
         <div className="flex w-full flex-col rounded-xl border bg-card pt-2 shadow-md">
-          <div className="flex flex-col px-4 pt-2">
+          <div className="flex flex-col p-4">
             <span className="text-lg font-semibold text-muted-foreground">
               Filtros
             </span>
@@ -162,14 +170,16 @@ export default function Emprestimo() {
             </div>
           </div>
           <Table>
-            <TableCaption className="py-2">
+            <TableCaption className="py-4">
               Uma lista de todos os empréstimos.
             </TableCaption>
             <TableHeader className="bg-transparent/5">
               <TableRow>
-                <TableHead className="w-[20px] max-w-[20px] px-4">ID</TableHead>
+                <TableHead className="w-[120px] px-8">ID</TableHead>
                 <TableHead className="w-[40px] text-center">Valor</TableHead>
-                <TableHead className="w-[40px] text-center">Receber</TableHead>
+                <TableHead className="w-[150px] min-w-[150px] text-center">
+                  Receber
+                </TableHead>
                 <TableHead className="w-[40px] text-center">Juros</TableHead>
                 <TableHead className="w-[40px] text-center">
                   Juros/Dia
@@ -196,17 +206,36 @@ export default function Emprestimo() {
               {isLoading ||
                 (StatusRefetchAtrasados && <EmprestimoTableSkeleton />)}
               {ListaEmprestimo &&
-                ListaEmprestimo.map((value) => {
+                ListaEmprestimo.slice(page, perPage).map((value) => {
                   return <RowTable key={value.id} emprestimo={value} />
                 })}
             </TableBody>
             <TableFooter>
               <TableRow>
                 <TableCell
-                  className="text-center text-sm font-semibold text-muted-foreground"
-                  colSpan={13}
+                  colSpan={3}
+                  align="right"
+                  className="font-semibold tracking-tight text-green-500"
+                >
+                  Total de {ConvertCurrency(totalReceber || 0)}
+                </TableCell>
+                <TableCell colSpan={13} />
+              </TableRow>
+              <TableRow>
+                <TableCell
+                  className="text-right text-sm font-semibold text-muted-foreground"
+                  colSpan={10}
                 >
                   Total de {ListaEmprestimo?.length} empréstimos{' '}
+                </TableCell>
+                <TableCell className="max-w-[60px] justify-between" colSpan={3}>
+                  <CustomPagination
+                    totalPages={ListaEmprestimo?.length}
+                    page={page}
+                    perPage={perPage}
+                    setPage={(value) => setPage(value)}
+                    setPerPage={(value) => setPerPage(value)}
+                  />
                 </TableCell>
               </TableRow>
             </TableFooter>

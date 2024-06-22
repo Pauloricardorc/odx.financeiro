@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Loader2Icon } from 'lucide-react'
 import { CurrencyInput } from 'react-currency-mask'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -72,8 +73,11 @@ export default function Renovacao({ idEmprestimo }: Props) {
       <DialogTrigger asChild>
         <Button
           variant="link"
-          className="flex w-full items-center justify-start text-sm text-accent-foreground transition-colors hover:bg-transparent/20 hover:no-underline"
+          className="flex w-full items-center justify-start text-sm text-accent-foreground text-gray-700 transition-colors hover:bg-transparent/20 hover:no-underline"
         >
+          {mutation.isPending && (
+            <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+          )}{' '}
           Renovar
         </Button>
       </DialogTrigger>

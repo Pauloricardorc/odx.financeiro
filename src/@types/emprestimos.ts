@@ -7,6 +7,7 @@ export type IEmprestimo = {
   dataEmprestimo: string
   dataQuitacao: string
   dataVencimento: string
+  observacao: string
   status: number
   cliente: {
     id: number

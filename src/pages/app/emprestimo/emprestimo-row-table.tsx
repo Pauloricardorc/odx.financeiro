@@ -16,7 +16,7 @@ interface Props {
 export default function RowTable({ emprestimo }: Props) {
   return (
     <TableRow key={emprestimo.id} className="transition-all duration-300">
-      <TableCell className="px-4 font-medium">{emprestimo.id}</TableCell>
+      <TableCell className="px-8 font-medium">{emprestimo.id}</TableCell>
       <TableCell className="text-center">
         {ConvertCurrency(emprestimo.valorEmprestado)}
       </TableCell>
@@ -41,11 +41,17 @@ export default function RowTable({ emprestimo }: Props) {
       </TableCell>
       <TableCell>
         {emprestimo.status === 0 ? (
-          <Badge className="flex w-[70px] justify-center" variant="outline">
+          <Badge
+            className="flex w-[70px] justify-center border border-red-500 bg-red-300/40 text-red-500 dark:bg-red-500/40"
+            variant="outline"
+          >
             Aberto
           </Badge>
         ) : (
-          <Badge className="flex w-[70px] justify-center" variant="outline">
+          <Badge
+            className="flex w-[70px] justify-center border border-green-500 bg-green-300/40 text-green-600 dark:bg-green-500/40"
+            variant="outline"
+          >
             Quitado
           </Badge>
         )}

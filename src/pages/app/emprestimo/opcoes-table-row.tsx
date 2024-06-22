@@ -28,7 +28,9 @@ export default function OpcoesRowTable({ idEmprestimo }: Props) {
       try {
         await API.put('/Emprestimos/Quitar', {
           id: idEmprestimo,
-        })
+        }).then(() =>
+          queryClient.invalidateQueries({ queryKey: ['emprestimos'] }),
+        )
         return true
       } catch (error) {
         toast('Erro ao quitar o empréstimo')
@@ -55,9 +57,9 @@ export default function OpcoesRowTable({ idEmprestimo }: Props) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="link"
-          className="flex h-7 w-[30px] items-center justify-center rounded-lg bg-accent p-0 text-muted-foreground"
+          className="flex h-7 w-[30px] items-center justify-center rounded-lg border p-0 text-muted-foreground hover:bg-gray-200"
         >
-          <EllipsisVertical className="h-5 w-5" />
+          <EllipsisVertical className="h-5 w-5 text-gray-500" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -81,7 +83,7 @@ export default function OpcoesRowTable({ idEmprestimo }: Props) {
         <DropdownMenuLabel asChild>
           <Button
             variant="link"
-            className="duration-400 flex w-full items-center justify-start px-3.5 text-sm text-accent-foreground transition-all hover:bg-transparent/20 hover:no-underline"
+            className="flex w-full items-center justify-start pl-4 text-sm font-medium text-gray-600 transition-colors hover:bg-transparent/20 hover:no-underline"
             onClick={() => handleQuintarEmprestimo()}
             disabled={isPending}
           >

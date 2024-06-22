@@ -65,6 +65,9 @@ export default function CriarEmprestimo() {
 
   const defaultValues = () => {
     form.reset()
+    form.reset({
+      observacao: '',
+    })
     queryClient.invalidateQueries({ queryKey: ['emprestimos'] })
     toast({
       variant: 'default',

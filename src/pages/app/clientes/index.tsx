@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
 
 import { IUser } from '@/@types/users'
+import CustomPagination from '@/components/pagination'
 import { ModeToggle } from '@/components/theme/mode-toggle'
 import { TooltipDemo } from '@/components/tooltip'
 import { Button } from '@/components/ui/button'
@@ -29,6 +30,8 @@ export default function Clientes() {
   const [, , removeSessionCookie] = useCookies(['session'])
   const [search, setSearch] = useState('')
   const [listClientes, setListClientes] = useState<IUser[]>([])
+  const [page, setPage] = useState(0)
+  const [perPage, setPerPage] = useState(10)
 
   const { data: Clientes, isLoading } = useQuery({
     queryKey: ['clientes'],
@@ -41,7 +44,9 @@ export default function Clientes() {
 
   useEffect(() => {
     if (search) {
-      const newList = listClientes.filter((list) => list.nome.includes(search))
+      const newList = listClientes.filter((list) =>
+        list.nome.toLowerCase().includes(search.toLowerCase()),
+      )
       setListClientes(newList)
     } else {
       setListClientes(Clientes)
@@ -69,7 +74,7 @@ export default function Clientes() {
       </div>
       <div className="h-full w-full">
         <div className="flex w-full flex-col rounded-xl border bg-card pt-2 shadow-md">
-          <div className="flex flex-col px-4 pt-2">
+          <div className="flex flex-col p-4">
             <span className="text-lg font-semibold text-muted-foreground">
               Filtros
             </span>
@@ -86,26 +91,30 @@ export default function Clientes() {
             </div>
           </div>
           <Table>
-            <TableCaption>Uma lista dos todos os usúarios.</TableCaption>
+            <TableCaption className="py-4">
+              Uma lista dos todos os clientes.
+            </TableCaption>
             <TableHeader className="bg-transparent/5">
               <TableRow>
-                <TableHead className="w-[80px] px-4">ID</TableHead>
+                <TableHead className="w-[120px] px-8">ID</TableHead>
                 <TableHead className="w-auto">Nome</TableHead>
-                <TableHead className="w-auto">Telefone</TableHead>
-                <TableHead className="w-auto text-center">Editar</TableHead>
+                <TableHead className="w-[200px] text-left">Telefone</TableHead>
+                <TableHead className="w-[240px] px-8 text-end">
+                  Editar
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && <ClientesTableSkeleton />}
               {listClientes &&
-                listClientes.map((user) => (
+                listClientes.slice(page, perPage).map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell className="px-4 font-medium">
+                    <TableCell className="px-8 font-medium">
                       {user.id}
                     </TableCell>
                     <TableCell>{user.nome}</TableCell>
-                    <TableCell>{user.telefone}</TableCell>
-                    <TableCell align="center" className="p-0">
+                    <TableCell align="left">{user.telefone}</TableCell>
+                    <TableCell align="right" className="w-auto p-0 px-8">
                       <EditarCliente idUser={user.id} />
                     </TableCell>
                   </TableRow>
@@ -114,10 +123,19 @@ export default function Clientes() {
             <TableFooter>
               <TableRow>
                 <TableCell
-                  className="text-center text-sm font-semibold text-muted-foreground"
-                  colSpan={14}
+                  className="pr-16 text-right text-sm font-semibold text-muted-foreground"
+                  colSpan={3}
                 >
                   Total {Clientes?.length} clientes{' '}
+                </TableCell>
+                <TableCell className="max-w-[60px] justify-between" colSpan={1}>
+                  <CustomPagination
+                    totalPages={listClientes?.length}
+                    page={page}
+                    perPage={perPage}
+                    setPage={(value) => setPage(value)}
+                    setPerPage={(value) => setPerPage(value)}
+                  />
                 </TableCell>
               </TableRow>
             </TableFooter>

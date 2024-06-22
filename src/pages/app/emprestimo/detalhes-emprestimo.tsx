@@ -32,9 +32,9 @@ export default function DetalhesEmprestimo({ data }: Props) {
       <SheetTrigger asChild>
         <Button
           variant="link"
-          className="flex h-7 w-[30px] max-w-[30px] items-center justify-center rounded-lg bg-primary/10 p-0"
+          className="flex h-7 w-[30px] max-w-[30px] items-center justify-center rounded-lg border p-0 hover:bg-gray-200"
         >
-          <EyeIcon className="h-5 w-5" />
+          <EyeIcon className="h-5 w-5 text-gray-500" />
         </Button>
       </SheetTrigger>
       <SheetContent className="h-full w-full overflow-y-scroll sm:w-[380px]">
@@ -140,20 +140,22 @@ export default function DetalhesEmprestimo({ data }: Props) {
                     />
                   </div>
                 </div>
-                <p>Renovacões</p>
+                <p>Observação</p>
                 <Separator />
-                <Accordion type="single" collapsible className="border">
+                <p>{data.observacao}</p>
+                <p className="flex items-center justify-center">Renovacões</p>
+                <Accordion type="single" collapsible>
                   {data?.renovacoes.map((renova) => (
                     <AccordionItem
                       key={renova.dataPagamento}
                       value={renova.dataPagamento}
-                      className="items-center px-4 text-center"
+                      className="items-center border text-center"
                     >
-                      <AccordionTrigger>
+                      <AccordionTrigger className="border-b px-4">
                         <BadgeDollarSign size={18} onChange={() => {}} />
                         {format(renova?.dataPagamento, 'dd/MM/yyyy')}
                       </AccordionTrigger>
-                      <AccordionContent>
+                      <AccordionContent className="p-4">
                         valor: R$ {renova?.valor}
                       </AccordionContent>
                     </AccordionItem>
