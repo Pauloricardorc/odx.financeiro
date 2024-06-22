@@ -1,18 +1,7 @@
 import { ScanFace } from 'lucide-react'
-import { useEffect } from 'react'
-import { useCookies } from 'react-cookie'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 export function SignInLayout() {
-  const navigate = useNavigate()
-  const [getSession] = useCookies(['session'])
-
-  useEffect(() => {
-    if (getSession.session) {
-      return navigate('/')
-    }
-  }, [getSession.session, navigate])
-
   return (
     <div className="flex gap-3 antialiased">
       <div className="hidden min-w-[480px] border-r p-8 lg:flex lg:flex-1">
