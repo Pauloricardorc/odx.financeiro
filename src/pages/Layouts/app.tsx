@@ -1,21 +1,13 @@
-import { useEffect } from 'react'
 import { useCookies } from 'react-cookie'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 import Header from '@/components/header'
 
 export default function LayoutApp() {
-  const navigate = useNavigate()
   const [getSession] = useCookies(['session'])
 
-  useEffect(() => {
-    if (!getSession.session) {
-      return navigate('/login')
-    }
-  }, [getSession.session, navigate])
-
   return (
-    getSession.session && (
+    !getSession.session && (
       <div className="flex h-screen w-screen flex-col font-nunito">
         <Header />
 
